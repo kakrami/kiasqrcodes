@@ -8,11 +8,228 @@
   <link rel="stylesheet" href="src/css/styles.css">
 
   <style>
+
+    .control-card-title {
+      color: #6c757d;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .preview-panel {
+      position: sticky;
+      top: 20px;
+    }
+    .advanced-panel {
+      overflow: hidden;
+    }
+    .advanced-toggle {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      color: #6c757d;
+      cursor: pointer;
+      display: flex;
+      font-size: 0.95rem;
+      font-weight: 700;
+      justify-content: space-between;
+      padding: 0;
+      text-align: left;
+      width: 100%;
+    }
+    .advanced-chevron {
+      font-size: 12px;
+      transition: transform .24s ease;
+    }
+    .advanced-panel.open .advanced-chevron {
+      transform: rotate(180deg);
+    }
+    .advanced-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height .28s ease, opacity .22s ease;
+      will-change: max-height, opacity;
+    }
+    .advanced-panel.open .advanced-content {
+      opacity: 1;
+    }
+    .advanced-content-inner {
+      padding-top: 5px;
+    }
+    .advanced-settings-grid {
+      display: grid;
+      gap: 4px;
+      grid-template-columns: 1fr;
+    }
+    .advanced-field {
+      align-items: center;
+      display: grid;
+      gap: 6px;
+      grid-template-columns: 82px minmax(0, 1fr) auto;
+      min-width: 0;
+    }
+    .advanced-field > .form-label {
+      color: #6c757d;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.05;
+      margin: 0;
+    }
+    .advanced-range-wrap {
+      min-width: 0;
+    }
+    .setting-value-pill {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 999px;
+      color: #495057;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 42px;
+      padding: 1px 6px;
+      text-align: center;
+    }
+    .range-modern {
+      --range-fill: 100%;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+      height: 22px;
+      padding: 0;
+    }
+    .range-modern:focus {
+      outline: none;
+    }
+    .range-modern::-webkit-slider-runnable-track {
+      background: linear-gradient(90deg, #0d6efd var(--range-fill), #dfe5ec var(--range-fill));
+      border-radius: 999px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.08);
+      height: 8px;
+    }
+    .range-modern::-webkit-slider-thumb {
+      appearance: none;
+      background: #fff;
+      border: 3px solid #0d6efd;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(13, 110, 253, .32);
+      height: 20px;
+      margin-top: -6px;
+      transition: transform .12s ease, box-shadow .12s ease;
+      width: 20px;
+    }
+    .range-modern:active::-webkit-slider-thumb {
+      box-shadow: 0 3px 10px rgba(13, 110, 253, .42);
+      transform: scale(1.08);
+    }
+    .range-modern::-moz-range-track {
+      background: #dfe5ec;
+      border-radius: 999px;
+      height: 8px;
+    }
+    .range-modern::-moz-range-progress {
+      background: #0d6efd;
+      border-radius: 999px;
+      height: 8px;
+    }
+    .range-modern::-moz-range-thumb {
+      background: #fff;
+      border: 3px solid #0d6efd;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(13, 110, 253, .28);
+      height: 16px;
+      width: 16px;
+    }
+    .range-stop-labels {
+      color: #6c757d;
+      font-size: 9px;
+      font-weight: 700;
+      height: 12px;
+      margin: -4px 0 0;
+      position: relative;
+    }
+    .range-stop-labels span {
+      left: calc(10px + (var(--pos) * (100% - 20px)));
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+    }
+    .range-note {
+      color: #6c757d;
+      font-size: 9px;
+      line-height: 1.15;
+      margin-top: 2px;
+      min-height: 10px;
+    }
+    .range-note.warning {
+      color: #b45309;
+      font-weight: 600;
+    }
     .image-size-control {
       font-size: 13px;
     }
+    .image-size-control + .image-size-control {
+      margin-top: 2px;
+    }
+    .image-control-label {
+      flex: 0 0 86px;
+      min-width: 86px;
+    }
     .image-size-control input[type="range"] {
       width: 100%;
+    }
+    .image-adjustment-note {
+      margin-left: 88px;
+      min-height: 11px;
+    }
+    .auto-setting-copy {
+      color: #6c757d;
+      font-size: 10px;
+      line-height: 1.15;
+      min-width: 0;
+    }
+    .advanced-help-copy {
+      grid-column: 2 / 4;
+      margin-top: -2px;
+    }
+    .error-correction-labels {
+      margin-top: -3px;
+    }
+    #errorCorrectionValue {
+      min-width: 58px;
+    }
+    .error-correction-field {
+      display: block;
+    }
+    .error-correction-field .advanced-field-label {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .error-correction-field .advanced-field-label .form-label {
+      color: #6c757d;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .error-correction-field .advanced-range-wrap {
+      width: 100%;
+    }
+    .error-correction-field .ec-labels {
+      color: #6c757d;
+      font-size: 10px;
+      font-weight: 700;
+      height: 16px;
+      margin: -2px 10px 0;
+      position: relative;
+    }
+    .error-correction-field .ec-labels span {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+    }
+    .error-correction-field .advanced-help-copy {
+      margin-top: 2px;
     }
     .image-size-value {
       min-width: 42px;
@@ -20,16 +237,210 @@
       font-weight: 600;
       color: #495057;
     }
+    .template-control-card {
+      font-size: 13px;
+    }
+    .template-control-title {
+      font-weight: 600;
+      color: #6c757d;
+    }
+    .template-control-card .form-label {
+      margin-bottom: 3px;
+      color: #6c757d;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .template-size-value,
+    .template-gap-value {
+      min-width: 38px;
+      text-align: right;
+      font-weight: 600;
+      color: #495057;
+    }
+    .template-color-picker .color-display {
+      height: 34px;
+      border-radius: 6px;
+    }
+    .template-color-line {
+      align-items: center;
+      display: flex;
+      gap: 7px;
+    }
+    .template-color-line .template-color-picker {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .template-color-match {
+      align-items: center;
+      color: #6c757d;
+      display: flex;
+      flex: 0 0 auto;
+      font-size: 11px;
+      gap: 4px;
+      line-height: 1;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .template-color-match input {
+      height: 13px;
+      margin: 0;
+      width: 13px;
+    }
+    .color-pair-grid {
+      align-items: center;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+    }
+    .color-swap-btn {
+      align-items: center;
+      align-self: center;
+      background: #fff;
+      border: 1px solid #ced4da;
+      border-radius: 50%;
+      color: #495057;
+      display: inline-flex;
+      font-size: 17px;
+      height: 32px;
+      justify-content: center;
+      padding: 0;
+      transition: border-color .16s ease, box-shadow .16s ease, color .16s ease, transform .16s ease;
+      width: 32px;
+    }
+    .color-swap-btn:hover {
+      border-color: #0d6efd;
+      box-shadow: 0 2px 8px rgba(13,110,253,.2);
+      color: #0d6efd;
+      transform: rotate(180deg);
+    }
+    .template-color-pair {
+      margin-bottom: .5rem;
+    }
+    .frame-item {
+      padding: 0 !important;
+    }
+    .remove-frame-btn {
+      right: 2px !important;
+    }
+    .frame-controls {
+      align-items: center;
+      display: grid;
+      flex: 1 1 auto;
+      gap: 8px;
+      grid-template-columns: minmax(0, 1fr) 45px;
+      min-width: 0;
+      padding-right: 22px;
+      width: auto;
+    }
+    .frame-color-group {
+      align-items: center;
+      display: grid;
+      gap: 7px;
+      grid-template-columns: minmax(64px, 1fr) auto;
+      min-height: 38px;
+      min-width: 0;
+    }
+    .frame-color-picker {
+      align-items: center;
+      align-self: stretch;
+      display: flex;
+      height: auto;
+      min-width: 0;
+      width: 100%;
+    }
+    .frame-color-picker .color-picker-container {
+      margin-bottom: 0;
+      width: 100%;
+    }
+    .frame-color-picker .color-display {
+      margin-bottom: 0;
+      width: 100%;
+    }
+    .frame-thickness-wrap {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      width: 45px;
+    }
+    .frame-thickness-input,
+    .form-control.frame-thickness-input {
+      flex: 0 0 45px;
+      max-width: 45px;
+      min-width: 45px;
+      width: 45px;
+    }
+    .frame-match-options {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 0;
+    }
+    .frame-color-match {
+      align-items: center;
+      color: #6c757d;
+      display: inline-flex;
+      font-size: 10px;
+      gap: 3px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .frame-color-match input {
+      height: 12px;
+      margin: 0;
+      width: 12px;
+    }
+    #framesContainer {
+      max-height: none;
+      overflow-y: visible;
+      scrollbar-gutter: stable;
+    }
+    #framesContainer.frames-scroll-active {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 3px;
+    }
+    .save-hint {
+      color: #6c757d;
+      font-size: 12px;
+      margin-top: 8px;
+      text-align: center;
+    }
+    #templateText {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    /* The template can make the final canvas non-square.
+       Let the rendered canvas control the preview height so it is not clipped. */
+    #qrcode.blank-bg {
+      aspect-ratio: auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #qrcode.blank-bg:empty {
+      aspect-ratio: 1 / 1;
+    }
+
+    #qrcode.blank-bg canvas {
+      display: block;
+      height: auto !important;
+      max-width: 100%;
+      width: 100% !important;
+    }
   </style>
 </head>
 <body>
   <div class="container-lg container-card bg-white rounded shadow p-4">
-    <div class="row g-4">
-      <!-- controls -->
-      <div class="col-12 col-lg-6">
-        <h5 class="fw-semibold text-secondary mb-2 text-center text-lg-start">Kia's QR Codes</h5>
-        <textarea id="qrtext" class="form-control mb-1" rows="4" placeholder="Enter text to encode…" maxlength="1500">ENTER TEXT HERE...</textarea>
-        <div id="counter" class="text-end mb-2">0 / 1500</div>
+    <h5 class="fw-semibold text-secondary mb-3 text-center text-lg-start">Kia's QR Codes</h5>
+
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-lg-4">
+        <div class="mb-3">
+          <textarea id="qrtext" class="form-control mb-1" rows="4" placeholder="Enter text to encode…" maxlength="1500">ENTER TEXT HERE...</textarea>
+          <div id="counter" class="text-end mb-2">0 / 1500</div>
+        </div>
 
         <div class="mb-3">
           <input type="file" id="logoInput" multiple accept="image/*" class="form-control">
@@ -38,59 +449,188 @@
               <div>+</div><div>Add Image</div>
             </div>
           </div>
-          <div class="image-size-control d-flex align-items-center gap-2 mb-3">
-            <label for="logoSizeDial" class="form-label mb-0 text-secondary">Image size</label>
-            <input type="range" id="logoSizeDial" class="form-range flex-grow-1" min="15" max="45" step="1" value="25">
+          <div class="image-size-control d-flex align-items-center gap-2">
+            <label for="logoSizeDial" class="form-label mb-0 text-secondary image-control-label">Image size</label>
+            <input type="range" id="logoSizeDial" class="form-range range-modern flex-grow-1" min="15" max="45" step="1" value="25">
             <span id="logoSizeValue" class="image-size-value">25%</span>
           </div>
-        </div>
-
-        <!-- Color Pickers -->
-        <div class="row g-3 mb-3">
-          <div class="col-6">
-            <div class="color-picker-container">
-              <div class="color-label">Foreground</div>
-              <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="fgColorDisplay"></div>
-              <div class="color-picker-dropdown" id="fgColorPicker">
-                <div class="color-palette" id="fgColorPalette"></div>
-                <div class="color-input-group">
-                  <input type="text" class="color-input" id="fgColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
-                  <input type="color" class="native-color-input" id="fgColorNative" value="#ffffff">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="color-picker-container">
-              <div class="color-label">Background</div>
-              <div class="color-display" data-color="#000000" style="--color-value:#000000" id="bgColorDisplay"></div>
-              <div class="color-picker-dropdown" id="bgColorPicker">
-                <div class="color-palette" id="bgColorPalette"></div>
-                <div class="color-input-group">
-                  <input type="text" class="color-input" id="bgColorInput" value="#000000" pattern="^#[0-9A-Fa-f]{6}$">
-                  <input type="color" class="native-color-input" id="bgColorNative" value="#000000">
-                </div>
-              </div>
-            </div>
+          <div class="image-size-control d-flex align-items-center gap-2">
+            <label for="logoPaddingDial" class="form-label mb-0 text-secondary image-control-label">Image padding</label>
+            <input type="range" id="logoPaddingDial" class="form-range range-modern flex-grow-1" min="0" max="6" data-base-max="6" step="1" value="0">
+            <span id="logoPaddingValue" class="image-size-value">0 dots</span>
           </div>
         </div>
 
-        <!-- QR Code Styles -->
+        <div class="color-pair-grid mb-3">
+          <div class="color-picker-container">
+            <div class="color-label">Foreground</div>
+            <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="fgColorDisplay"></div>
+            <div class="color-picker-dropdown" id="fgColorPicker">
+              <div class="color-palette" id="fgColorPalette"></div>
+              <div class="color-input-group">
+                <input type="text" class="color-input" id="fgColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
+                <input type="color" class="native-color-input" id="fgColorNative" value="#ffffff">
+              </div>
+            </div>
+          </div>
+          <button type="button" id="swapQrColors" class="color-swap-btn" title="Swap foreground and background colors" aria-label="Swap foreground and background colors">⇄</button>
+          <div class="color-picker-container">
+            <div class="color-label">Background</div>
+            <div class="color-display" data-color="#000000" style="--color-value:#000000" id="bgColorDisplay"></div>
+            <div class="color-picker-dropdown" id="bgColorPicker">
+              <div class="color-palette" id="bgColorPalette"></div>
+              <div class="color-input-group">
+                <input type="text" class="color-input" id="bgColorInput" value="#000000" pattern="^#[0-9A-Fa-f]{6}$">
+                <input type="color" class="native-color-input" id="bgColorNative" value="#000000">
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="mb-3">
-          <div id="styleBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start p-2 border rounded bg-light">
-          </div>
+          <div id="styleBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start p-2 border rounded bg-light"></div>
         </div>
 
-        <!-- frames UI -->
-        <div id="framesSection" class="mb-3">
-          <div id="framesContainer" class="scrollable"></div>
+        <div id="advancedSection" class="advanced-panel template-control-card mb-3 p-2 border rounded bg-light">
+          <button type="button" id="advancedToggle" class="advanced-toggle" aria-expanded="false" aria-controls="advancedContent">
+            <span>Advanced</span>
+            <span class="advanced-chevron">▾</span>
+          </button>
+          <div id="advancedContent" class="advanced-content">
+            <div class="advanced-content-inner">
+              <div class="advanced-field error-correction-field">
+                <div class="advanced-field-label">
+                  <label for="errorCorrectionDial" class="form-label mb-0">Error correction</label>
+                  <span id="errorCorrectionValue" class="setting-value-pill">Auto · M</span>
+                </div>
+                <div class="advanced-range-wrap">
+                  <input type="range" id="errorCorrectionDial" class="form-range range-modern w-100" min="0" max="4" step="1" value="0" aria-label="Error correction override">
+                  <div class="ec-labels" aria-hidden="true">
+                    <span style="left:0%">Auto</span>
+                    <span style="left:25%">L</span>
+                    <span style="left:50%">M</span>
+                    <span style="left:75%">Q</span>
+                    <span style="left:100%">H</span>
+                  </div>
+                </div>
+                <div id="errorCorrectionHelp" class="auto-setting-copy advanced-help-copy">Auto selects the safest usable level.</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <button id="addFrame" type="button" class="btn btn-outline-secondary btn-sm mb-3 w-100">+ Add Frame</button>
       </div>
 
-      <!-- preview -->
-      <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
-        <div id="qrcode" class="blank-bg"></div>
+      <div class="col-12 col-lg-4">
+        <div id="framesSection" class="template-control-card mb-3 p-2 border rounded bg-light">
+          <div class="template-control-title mb-2">Frames</div>
+          <div id="framesContainer" class="mb-2"></div>
+          <button id="addFrame" type="button" class="btn btn-outline-secondary btn-sm w-100">+ Add Frame</button>
+        </div>
+
+        <div id="templateSection" class="template-control-card mb-3 p-2 border rounded bg-light">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="template-control-title">Template text</div>
+            <div class="form-check form-switch m-0">
+              <input class="form-check-input" type="checkbox" id="templateEnabled">
+              <label class="form-check-label text-secondary" for="templateEnabled">On</label>
+            </div>
+          </div>
+
+          <textarea id="templateText" class="form-control form-control-sm mb-2" rows="3" placeholder="Text around QR code" maxlength="240"></textarea>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label for="templateSide" class="form-label">Side</label>
+              <select id="templateSide" class="form-select form-select-sm">
+                <option value="bottom" selected>Bottom</option>
+                <option value="top">Top</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="templateFont" class="form-label">Font</label>
+              <select id="templateFont" class="form-select form-select-sm">
+                <option value="Arial" selected>Arial</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label for="templateWeight" class="form-label">Style</label>
+            <select id="templateWeight" class="form-select form-select-sm">
+              <option value="400" selected>Regular</option>
+              <option value="600">Semi-bold</option>
+              <option value="700">Bold</option>
+            </select>
+          </div>
+
+          <div class="color-pair-grid template-color-pair">
+            <div>
+              <label class="form-label">Text</label>
+              <div class="template-color-line">
+                <div class="color-picker-container template-color-picker">
+                  <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="templateColorDisplay"></div>
+                  <div class="color-picker-dropdown" id="templateColorPicker">
+                    <div class="color-palette" id="templateColorPalette"></div>
+                    <div class="color-input-group">
+                      <input type="text" class="color-input" id="templateColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
+                      <input type="color" class="native-color-input" id="templateColorNative" value="#ffffff">
+                    </div>
+                  </div>
+                </div>
+                <label class="template-color-match" title="Match foreground color">
+                  <input type="checkbox" id="templateTextMatchFg"> Fore
+                </label>
+              </div>
+            </div>
+            <button type="button" id="swapTemplateColors" class="color-swap-btn" title="Swap template text and background colors" aria-label="Swap template text and background colors">⇄</button>
+            <div>
+              <label class="form-label">Back</label>
+              <div class="template-color-line">
+                <div class="color-picker-container template-color-picker">
+                  <div class="color-display" data-color="#000000" style="--color-value:#000000" id="templateBgColorDisplay"></div>
+                  <div class="color-picker-dropdown" id="templateBgColorPicker">
+                    <div class="color-palette" id="templateBgColorPalette"></div>
+                    <div class="color-input-group">
+                      <input type="text" class="color-input" id="templateBgColorInput" value="#000000" pattern="^#[0-9A-Fa-f]{6}$">
+                      <input type="color" class="native-color-input" id="templateBgColorNative" value="#000000">
+                    </div>
+                  </div>
+                </div>
+                <label class="template-color-match" title="Match background color">
+                  <input type="checkbox" id="templateBackMatchBg"> Back
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <label for="templateFontSize" class="form-label mb-0">Font size</label>
+            <input type="range" id="templateFontSize" class="form-range range-modern flex-grow-1" min="20" max="140" step="2" value="48">
+            <span id="templateFontSizeValue" class="template-size-value">48</span>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <label for="templateGap" class="form-label mb-0">Spacing</label>
+            <input type="range" id="templateGap" class="form-range range-modern flex-grow-1" min="0" max="80" step="2" value="20">
+            <span id="templateGapValue" class="template-gap-value">20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="preview-panel">
+          <div class="d-flex justify-content-center align-items-start">
+            <div id="qrcode" class="blank-bg"></div>
+          </div>
+          <div class="save-hint">ⓘ Right-click the QR code and choose “Save image as…”</div>
+        </div>
       </div>
     </div>
   </div>
@@ -101,8 +641,9 @@
   <script src="src/js/Sortable.min.js"></script>
   <script src="src/js/color-categories.js"></script>
   <script>
-    const SIZE=800,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120,QR_MARGIN=20;
+    const DISPLAY_SIZE=800,CANVAS_SCALE=2,SIZE=DISPLAY_SIZE*CANVAS_SCALE,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120,QR_MARGIN=20*CANVAS_SCALE,QR_CORNER_RADIUS=8*CANVAS_SCALE;
     let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),qrRunId=0;
+    let templateTextColorPicker=null,templateBgColorPicker=null;
 
     const hiddenHolder = $('<div>').css({
       position: 'absolute',
@@ -123,11 +664,11 @@
           .addClass('color-swatch')
           .css('background-color', col)
           .attr('data-color', col)
-          .on('click', () => { setColor(col); picker.removeClass('show'); })
+          .on('click', () => { setColor(col, 'user'); picker.removeClass('show'); })
           .appendTo(palette);
       });
 
-      function setColor(col){
+      function setColor(col, source = 'api'){
         display[0].style.setProperty('--color-value', col);
         display.data('color', col);
         input.val(col);
@@ -135,7 +676,7 @@
         palette.find('.color-swatch').each(function(){
           $(this).toggleClass('selected', $(this).data('color') === col);
         });
-        onChange(col);
+        onChange(col, source);
       }
 
       display.on('click', e => {
@@ -180,18 +721,83 @@
 
       input.on('input', e => {
         const v = e.target.value;
-        if(/^#[0-9A-Fa-f]{6}$/.test(v)) setColor(v);
+        if(/^#[0-9A-Fa-f]{6}$/.test(v)) setColor(v, 'user');
       });
-      native.on('input', e => setColor(e.target.value));
-      setColor(display.attr('data-color'));
+      native.on('input', e => setColor(e.target.value, 'user'));
+      setColor(display.attr('data-color'), 'init');
       return{setColor};
     }
 
-    const fgColorPicker=initColorPicker('fgColorDisplay','fgColorPicker','fgColorPalette','fgColorInput','fgColorNative',()=>scheduleQR());
-    const bgColorPicker=initColorPicker('bgColorDisplay','bgColorPicker','bgColorPalette','bgColorInput','bgColorNative',()=>scheduleQR());
+    function syncMatchedFrameColors() {
+      $('#framesContainer .frame-item').each(function() {
+        const item = $(this);
+        const picker = item.data('colorPicker');
+        if (!picker) return;
+        if (item.find('.frame-match-fore').prop('checked')) {
+          picker.setColor($('#fgColorDisplay').data('color'));
+        } else if (item.find('.frame-match-back').prop('checked')) {
+          picker.setColor($('#bgColorDisplay').data('color'));
+        }
+      });
+    }
+
+    function syncMatchedTemplateColors() {
+      let changed = false;
+      if (templateTextColorPicker && $('#templateTextMatchFg').prop('checked')) {
+        templateTextColorPicker.setColor($('#fgColorDisplay').data('color'));
+        changed = true;
+      }
+      if (templateBgColorPicker && $('#templateBackMatchBg').prop('checked')) {
+        templateBgColorPicker.setColor($('#bgColorDisplay').data('color'));
+        changed = true;
+      }
+      if (changed) scheduleFrame();
+    }
+
+    const fgColorPicker=initColorPicker('fgColorDisplay','fgColorPicker','fgColorPalette','fgColorInput','fgColorNative',()=>{syncMatchedTemplateColors();syncMatchedFrameColors();scheduleQR();});
+    const bgColorPicker=initColorPicker('bgColorDisplay','bgColorPicker','bgColorPalette','bgColorInput','bgColorNative',()=>{syncMatchedTemplateColors();syncMatchedFrameColors();scheduleQR();});
+    templateTextColorPicker=initColorPicker('templateColorDisplay','templateColorPicker','templateColorPalette','templateColorInput','templateColorNative',()=>scheduleFrame());
+    templateBgColorPicker=initColorPicker('templateBgColorDisplay','templateBgColorPicker','templateBgColorPalette','templateBgColorInput','templateBgColorNative',()=>scheduleFrame());
+
+    $('#swapQrColors').on('click', function() {
+      const foreground = $('#fgColorDisplay').data('color');
+      const background = $('#bgColorDisplay').data('color');
+      fgColorPicker.setColor(background);
+      bgColorPicker.setColor(foreground);
+    });
+
+    $('#swapTemplateColors').on('click', function() {
+      const textColor = $('#templateColorDisplay').data('color');
+      const backColor = $('#templateBgColorDisplay').data('color');
+      $('#templateTextMatchFg, #templateBackMatchBg').prop('checked', false);
+      templateTextColorPicker.setColor(backColor);
+      templateBgColorPicker.setColor(textColor);
+      scheduleFrame();
+    });
+
+    $('#templateTextMatchFg').on('change',function(){
+      if(this.checked) templateTextColorPicker.setColor($('#fgColorDisplay').data('color'));
+      scheduleFrame();
+    });
+    $('#templateBackMatchBg').on('change',function(){
+      if(this.checked) templateBgColorPicker.setColor($('#bgColorDisplay').data('color'));
+      scheduleFrame();
+    });
 
     $(document).on('click',e=>{
       if(!$(e.target).closest('.color-picker-container').length){$('.color-picker-dropdown').removeClass('show');}
+    });
+
+    function setAdvancedOpen(open) {
+      const panel = $('#advancedSection');
+      const content = $('#advancedContent')[0];
+      panel.toggleClass('open', open);
+      $('#advancedToggle').attr('aria-expanded', open ? 'true' : 'false');
+      content.style.maxHeight = open ? `${content.scrollHeight}px` : '0px';
+    }
+
+    $('#advancedToggle').on('click', function() {
+      setAdvancedOpen(!$('#advancedSection').hasClass('open'));
     });
 
     function createFrameColorPicker(container,initialColor,onChange){
@@ -329,8 +935,18 @@
           <span class="drag-handle">☰</span>
           <button type="button" class="remove-frame-btn">X</button>
           <div class="frame-controls">
-            <div class="frame-color-picker"></div>
-            <div>
+            <div class="frame-color-group">
+              <div class="frame-color-picker"></div>
+              <div class="frame-match-options">
+                <label class="frame-color-match" title="Match foreground color">
+                  <input type="checkbox" class="frame-match-fore"> ✓ Fore
+                </label>
+                <label class="frame-color-match" title="Match background color">
+                  <input type="checkbox" class="frame-match-back"> ✓ Back
+                </label>
+              </div>
+            </div>
+            <div class="frame-thickness-wrap">
               <input type="number"
                     class="form-control frame-thickness-input"
                     min="1"
@@ -342,13 +958,35 @@
         `);
 
       $('#framesContainer').append(item);
+      requestAnimationFrame(updateFrameScrollState);
 
       // color picker
-      createFrameColorPicker(
+      const framePicker = createFrameColorPicker(
         item.find('.frame-color-picker')[0],
         color,
-        scheduleFrame
+        (col, source) => {
+          if (source === 'user') {
+            item.find('.frame-match-fore, .frame-match-back').prop('checked', false);
+          }
+          scheduleFrame();
+        }
       );
+      item.data('colorPicker', framePicker);
+
+      item.find('.frame-match-fore').on('change', function() {
+        if (this.checked) {
+          item.find('.frame-match-back').prop('checked', false);
+          framePicker.setColor($('#fgColorDisplay').data('color'));
+        }
+        scheduleFrame();
+      });
+      item.find('.frame-match-back').on('change', function() {
+        if (this.checked) {
+          item.find('.frame-match-fore').prop('checked', false);
+          framePicker.setColor($('#bgColorDisplay').data('color'));
+        }
+        scheduleFrame();
+      });
 
       // thickness change
       item.find('.frame-thickness-input').on('input', scheduleFrame);
@@ -358,6 +996,7 @@
         item.css({ opacity: 0, transform: 'scale(.8)', transition: '.3s' });
         setTimeout(() => {
           item.remove();
+          updateFrameScrollState();
           scheduleFrame();
         }, 300);
       });
@@ -365,16 +1004,30 @@
       scheduleFrame();
     }
 
+    function updateFrameScrollState() {
+      const container = $('#framesContainer');
+      const items = container.children('.frame-item');
+
+      if (items.length <= 3) {
+        container.removeClass('frames-scroll-active').css('max-height', '');
+        return;
+      }
+
+      const firstRect = items.get(0).getBoundingClientRect();
+      const thirdRect = items.get(2).getBoundingClientRect();
+      const threeFrameHeight = Math.ceil(thirdRect.bottom - firstRect.top);
+      container
+        .addClass('frames-scroll-active')
+        .css('max-height', `${threeFrameHeight}px`);
+    }
+
     $('#addFrame').on('click',()=>addFrame());
+    $(window).on('resize', updateFrameScrollState);
 
     function getFrames() {
-      // implicit first frame = current bg color @ 24px
-      const frames = [{
-        color: $('#bgColorDisplay').data('color'),
-        thickness: 36
-      }];
+      const frames = [];
 
-      // then any real frames the user added
+      // User frames remain in their visible order, from nearest the QR outward.
       $('#framesContainer .frame-item').each(function() {
         const color = $(this).find('.color-display').data('color');
         const thick = Math.min(100,
@@ -383,26 +1036,126 @@
         if (thick > 0) frames.push({ color, thickness: thick });
       });
 
+      // Hidden outer corner fill is only used when template text is enabled.
+      // It stays outside every user frame and matches the template background color
+      // so the rounded QR/frame system blends cleanly into the template block.
+      const templateOptions = getTemplateOptions();
+      if (templateOptions) {
+        frames.push({
+          color: templateOptions.bg,
+          thickness: 36,
+          outerFill: true
+        });
+      }
+
       return frames;
     }
 
     new Sortable($('#framesContainer')[0], {
       animation:150,
       handle:'.drag-handle',
-      onEnd:()=>scheduleFrame()
+      onEnd:()=>{
+        updateFrameScrollState();
+        scheduleFrame();
+      }
     });
 
     $('#qrtext').on('input',function(){$('#counter').text(`${this.value.length} / ${MAX_LEN}`);scheduleQR();});
     /* ---- style picker ---- */
     const styleOptions = ['rounded','extra-rounded','square','dots','classy','classy-rounded'];
+    const ERROR_CORRECTION_LEVELS = ['L','M','Q','H'];
+    const ERROR_CORRECTION_OPTIONS = ['AUTO','L','M','Q','H'];
+    const AUTO_ERROR_CORRECTION_ORDER = ['M','Q','H','L'];
+    const ERROR_CORRECTION_FALLBACK_ORDER = ['H','Q','M','L'];
+    const SAFE_LOGO_AREA_BY_EC = { L: 0.04, M: 0.07, Q: 0.10, H: 0.14 };
     let   qrStyle      = 'rounded';                // default
     let   logoSize     = Number($('#logoSizeDial').val()) / 100;
+    let   logoPaddingModules = Number($('#logoPaddingDial').val()) || 0;
+    let   errorCorrectionPreference = 'AUTO';
+    let   errorCorrectionLevel = 'M';
 
     $('#logoSizeDial').on('input', function() {
       logoSize = Number(this.value) / 100;
       $('#logoSizeValue').text(`${this.value}%`);
+      updateRangeFill(this);
       scheduleQR();
     });
+
+    function updateRangeFill(input) {
+      if (!input) return;
+      const min = Number(input.min) || 0;
+      const max = Number(input.max) || 100;
+      const value = Number(input.value) || 0;
+      const pct = max === min ? 0 : ((value - min) / (max - min)) * 100;
+      input.style.setProperty('--range-fill', `${pct}%`);
+    }
+
+    function updateAllRangeFills() {
+      $('.range-modern').each(function(){ updateRangeFill(this); });
+    }
+
+    $('.range-modern').on('input change', function(){ updateRangeFill(this); });
+
+    function updateErrorCorrectionLabel() {
+      $('#errorCorrectionValue').text(
+        errorCorrectionPreference === 'AUTO'
+          ? `Auto · ${errorCorrectionLevel}`
+          : errorCorrectionPreference === errorCorrectionLevel
+            ? errorCorrectionLevel
+            : `${errorCorrectionPreference} → ${errorCorrectionLevel}`
+      );
+      $('#errorCorrectionHelp').text(
+        errorCorrectionPreference === 'AUTO'
+          ? 'Auto selects the safest usable level.'
+          : errorCorrectionPreference === errorCorrectionLevel
+            ? `Manual ${errorCorrectionPreference} override is active.`
+            : `${errorCorrectionPreference} was adjusted to ${errorCorrectionLevel} to keep the QR reliable.`
+      );
+      updateRangeFill($('#errorCorrectionDial')[0]);
+      setAdvancedOpen($('#advancedSection').hasClass('open'));
+    }
+
+    $('#errorCorrectionDial').on('input change', function() {
+      errorCorrectionPreference = ERROR_CORRECTION_OPTIONS[Number(this.value)] || 'AUTO';
+      updateRangeFill(this);
+      scheduleQR();
+    });
+
+    function updateLogoPaddingLabel() {
+      $('#logoPaddingValue').text(`${logoPaddingModules} ${logoPaddingModules === 1 ? 'dot' : 'dots'}`);
+      updateRangeFill($('#logoPaddingDial')[0]);
+    }
+
+    function updateLogoSizeLabel() {
+      const value = Math.round(logoSize * 100);
+      $('#logoSizeDial').val(value);
+      $('#logoSizeValue').text(`${value}%`);
+      updateRangeFill($('#logoSizeDial')[0]);
+    }
+
+    $('#logoPaddingDial').on('input change', function() {
+      logoPaddingModules = Math.max(0, Number(this.value) || 0);
+      updateLogoPaddingLabel();
+      scheduleQR();
+    });
+
+    updateErrorCorrectionLabel();
+    updateLogoPaddingLabel();
+    updateLogoSizeLabel();
+    updateAllRangeFills();
+
+    function updateTemplateLabels() {
+      $('#templateFontSizeValue').text($('#templateFontSize').val());
+      $('#templateGapValue').text($('#templateGap').val());
+      updateRangeFill($('#templateFontSize')[0]);
+      updateRangeFill($('#templateGap')[0]);
+    }
+
+    $('#templateSection').on('input change', 'input, select, textarea', function() {
+      updateTemplateLabels();
+      scheduleFrame();
+    });
+    updateTemplateLabels();
 
     styleOptions.forEach(opt=>{
       const icon = $('<div>')
@@ -496,44 +1249,328 @@
       return gridStart + Math.ceil((value - gridStart) / moduleSize) * moduleSize;
     }
 
-    function drawLogoWithReservedSpace(canvas, logoInfo, moduleCount) {
-      if (!logoInfo) return;
+    function getLogoMetrics(logoInfo, moduleCount, sizeFraction = logoSize, paddingModules = logoPaddingModules, canvasSize = SIZE) {
+      if (!logoInfo) return null;
 
+      const safeModuleCount = Number.isFinite(moduleCount) && moduleCount > 0 ? moduleCount : 41;
+      const layout = getQRLayout(safeModuleCount, canvasSize);
+      const aspect = logoInfo.width / logoInfo.height;
+      const maxLogoW = layout.qrSize * sizeFraction;
+      const maxLogoH = layout.qrSize * sizeFraction;
+      const fitted = fitRectToAspect(maxLogoW, maxLogoH, aspect);
+      const imageModulesW = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.w / layout.moduleSize)));
+      const imageModulesH = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.h / layout.moduleSize)));
+      const requestedPad = Math.max(0, Math.round(paddingModules));
+      const maxPadW = Math.floor((safeModuleCount - imageModulesW) / 2);
+      const maxPadH = Math.floor((safeModuleCount - imageModulesH) / 2);
+      const padModules = Math.max(0, Math.min(requestedPad, maxPadW, maxPadH));
+      const modulesW = imageModulesW + padModules * 2;
+      const modulesH = imageModulesH + padModules * 2;
+
+      return {
+        ...layout,
+        aspect,
+        imageModulesW,
+        imageModulesH,
+        padModules,
+        modulesW,
+        modulesH,
+        moduleCount: safeModuleCount,
+        areaRatio: (modulesW * modulesH) / (safeModuleCount * safeModuleCount)
+      };
+    }
+
+    function createQrCandidate(txt, level) {
+      try {
+        const qr = new QRCodeStyling({
+          width:128,height:128,margin:0,data:txt,
+          dotsOptions:{ type:'square', color:'#000000' },
+          backgroundOptions:{ color:'#ffffff' },
+          qrOptions:{errorCorrectionLevel:level}
+        });
+        const model = getQRModel(qr);
+        if (!model) return null;
+        return { level, moduleCount: model.getModuleCount() };
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function isLogoSafeForLevel(logoInfo, moduleCount, level, sizeFraction = logoSize, paddingModules = logoPaddingModules) {
+      if (!logoInfo) return true;
+      const metrics = getLogoMetrics(logoInfo, moduleCount, sizeFraction, paddingModules);
+      return !!metrics && metrics.areaRatio <= (SAFE_LOGO_AREA_BY_EC[level] || SAFE_LOGO_AREA_BY_EC.H);
+    }
+
+    function getMaxSafePadding(logoInfo, moduleCount, level, sizeFraction = logoSize) {
+      if (!logoInfo) return Number($('#logoPaddingDial').attr('data-base-max')) || 6;
+      const baseMax = Number($('#logoPaddingDial').attr('data-base-max')) || 6;
+      let maxSafe = 0;
+      for (let pad = 0; pad <= baseMax; pad++) {
+        if (isLogoSafeForLevel(logoInfo, moduleCount, level, sizeFraction, pad)) maxSafe = pad;
+        else break;
+      }
+      return maxSafe;
+    }
+
+    function setStablePaddingLimit(logoInfo, candidates) {
+      const strongestLevel = ERROR_CORRECTION_FALLBACK_ORDER.find(level => candidates[level]);
+      const strongest = strongestLevel ? candidates[strongestLevel] : null;
+      const baseMax = Number($('#logoPaddingDial').attr('data-base-max')) || 6;
+      const maxPadding = strongest && logoInfo
+        ? getMaxSafePadding(logoInfo, strongest.moduleCount, strongest.level, logoSize)
+        : baseMax;
+
+      $('#logoPaddingDial').attr('max', maxPadding);
+      if (logoPaddingModules > maxPadding) {
+        logoPaddingModules = maxPadding;
+        $('#logoPaddingDial').val(maxPadding);
+        updateLogoPaddingLabel();
+      }
+    }
+
+    function getSafeLevelOrder(preference) {
+      if (preference === 'AUTO') return AUTO_ERROR_CORRECTION_ORDER;
+      const index = ERROR_CORRECTION_LEVELS.indexOf(preference);
+      if (index < 0) return AUTO_ERROR_CORRECTION_ORDER;
+      return ERROR_CORRECTION_LEVELS.slice(index);
+    }
+
+    function selectErrorCorrection(txt, logoInfo) {
+      const candidates = {};
+      ERROR_CORRECTION_LEVELS.forEach(level => {
+        const candidate = createQrCandidate(txt, level);
+        if (candidate) candidates[level] = candidate;
+      });
+
+      if (!Object.keys(candidates).length) {
+        throw new Error('The current text is too long to encode as a QR code.');
+      }
+
+      // The padding slider's maximum is based on the strongest usable level and
+      // therefore stays stable while the user drags it. Generation never rewrites
+      // the padding value in response to the padding value itself.
+      setStablePaddingLimit(logoInfo, candidates);
+
+      const preferredOrder = getSafeLevelOrder(errorCorrectionPreference);
+      for (const level of preferredOrder) {
+        const candidate = candidates[level];
+        if (!candidate) continue;
+        if (!logoInfo || isLogoSafeForLevel(logoInfo, candidate.moduleCount, level)) {
+          const metrics = logoInfo ? getLogoMetrics(logoInfo, candidate.moduleCount) : null;
+          return { ...candidate, areaRatio: metrics ? metrics.areaRatio : 0 };
+        }
+      }
+
+      // If the requested level cannot carry the text, use the nearest available
+      // level. If the image area is unusually large, prefer the strongest level.
+      const fallbackLevel = ERROR_CORRECTION_FALLBACK_ORDER.find(level => candidates[level]);
+      const fallback = candidates[fallbackLevel];
+      const metrics = logoInfo ? getLogoMetrics(logoInfo, fallback.moduleCount) : null;
+      return { ...fallback, areaRatio: metrics ? metrics.areaRatio : 0 };
+    }
+
+    function getQRLayout(moduleCount, canvasSize = SIZE) {
+      const usable = canvasSize - (QR_MARGIN * 2);
+      const moduleSize = Math.max(1, Math.floor(usable / moduleCount));
+      const qrSize = moduleSize * moduleCount;
+      const qrStart = Math.round((canvasSize - qrSize) / 2);
+      return { moduleSize, qrSize, qrStart };
+    }
+
+    function getLogoReservedArea(logoInfo, moduleCount, canvasSize = SIZE) {
+      const metrics = getLogoMetrics(logoInfo, moduleCount, logoSize, logoPaddingModules, canvasSize);
+      if (!metrics) return null;
+
+      const moduleX = Math.floor((metrics.moduleCount - metrics.modulesW) / 2);
+      const moduleY = Math.floor((metrics.moduleCount - metrics.modulesH) / 2);
+      const clearX = metrics.qrStart + moduleX * metrics.moduleSize;
+      const clearY = metrics.qrStart + moduleY * metrics.moduleSize;
+      const clearW = metrics.modulesW * metrics.moduleSize;
+      const clearH = metrics.modulesH * metrics.moduleSize;
+      const innerX = clearX + metrics.padModules * metrics.moduleSize;
+      const innerY = clearY + metrics.padModules * metrics.moduleSize;
+      const innerW = Math.max(metrics.moduleSize, clearW - metrics.padModules * 2 * metrics.moduleSize);
+      const innerH = Math.max(metrics.moduleSize, clearH - metrics.padModules * 2 * metrics.moduleSize);
+      const draw = fitRectToAspect(innerW, innerH, metrics.aspect);
+
+      return {
+        moduleX,
+        moduleY,
+        modulesW: metrics.modulesW,
+        modulesH: metrics.modulesH,
+        clearX,
+        clearY,
+        clearW,
+        clearH,
+        padModules: metrics.padModules,
+        drawX: innerX + (innerW - draw.w) / 2,
+        drawY: innerY + (innerH - draw.h) / 2,
+        drawW: draw.w,
+        drawH: draw.h,
+        moduleSize: metrics.moduleSize,
+        qrStart: metrics.qrStart,
+        qrSize: metrics.qrSize,
+        moduleCount: metrics.moduleCount
+      };
+    }
+
+    function getQRModel(qr) {
+      const candidates = [
+        qr && qr._qr,
+        qr && qr._qrCode,
+        qr && qr._qrcode,
+        qr && qr.qrCode,
+        qr && qr.qrcode,
+        qr && qr._oQRCode
+      ];
+
+      for (const item of candidates) {
+        if (item && typeof item.isDark === 'function' && typeof item.getModuleCount === 'function') {
+          return item;
+        }
+      }
+
+      if (qr && typeof qr === 'object') {
+        for (const key in qr) {
+          const item = qr[key];
+          if (item && typeof item === 'object' && typeof item.isDark === 'function' && typeof item.getModuleCount === 'function') {
+            return item;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    function buildRoundedRectPath(ctx, x, y, w, h, radii) {
+      const [tl, tr, br, bl] = radii.map(r => Math.max(0, Math.min(r, Math.min(w, h) / 2)));
+      ctx.beginPath();
+      ctx.moveTo(x + tl, y);
+      ctx.lineTo(x + w - tr, y);
+      if (tr) ctx.quadraticCurveTo(x + w, y, x + w, y + tr); else ctx.lineTo(x + w, y);
+      ctx.lineTo(x + w, y + h - br);
+      if (br) ctx.quadraticCurveTo(x + w, y + h, x + w - br, y + h); else ctx.lineTo(x + w, y + h);
+      ctx.lineTo(x + bl, y + h);
+      if (bl) ctx.quadraticCurveTo(x, y + h, x, y + h - bl); else ctx.lineTo(x, y + h);
+      ctx.lineTo(x, y + tl);
+      if (tl) ctx.quadraticCurveTo(x, y, x + tl, y); else ctx.lineTo(x, y);
+      ctx.closePath();
+    }
+
+    function drawStyledModule(ctx, x, y, size, style, neighbors = {}) {
+      const bleed = Math.max(0.35, size * 0.035);
+      const bx = x - bleed;
+      const by = y - bleed;
+      const bs = size + bleed * 2;
+
+      if (style === 'dots') {
+        ctx.beginPath();
+        ctx.arc(x + size / 2, y + size / 2, (size / 2) + bleed, 0, Math.PI * 2);
+        ctx.fill();
+        return;
+      }
+
+      if (style === 'square') {
+        ctx.fillRect(bx, by, bs, bs);
+        return;
+      }
+
+      const roundedAmount = style === 'extra-rounded' ? 0.34 :
+        style === 'classy-rounded' ? 0.42 :
+        style === 'classy' ? 0.28 : 0.18;
+      const r = bs * roundedAmount;
+
+      let radii;
+      if (style === 'classy' || style === 'classy-rounded') {
+        radii = [
+          (!neighbors.top && !neighbors.left) ? r : 0,
+          0,
+          (!neighbors.bottom && !neighbors.right) ? r : 0,
+          0
+        ];
+      } else {
+        radii = [
+          (!neighbors.top && !neighbors.left) ? r : 0,
+          (!neighbors.top && !neighbors.right) ? r : 0,
+          (!neighbors.bottom && !neighbors.right) ? r : 0,
+          (!neighbors.bottom && !neighbors.left) ? r : 0
+        ];
+      }
+
+      buildRoundedRectPath(ctx, bx, by, bs, bs, radii);
+      ctx.fill();
+    }
+
+    function drawQRToCanvas(qr, logoInfo) {
+      const qrModel = getQRModel(qr);
+      const moduleCount = qrModel ? qrModel.getModuleCount() : 41;
+      const canvas = document.createElement('canvas');
+      canvas.width = SIZE;
+      canvas.height = SIZE;
       const ctx = canvas.getContext('2d');
       const bgColor = $('#bgColorDisplay').data('color');
-      const aspect = logoInfo.width / logoInfo.height;
-      const qrStart = QR_MARGIN;
-      const qrEnd = canvas.width - QR_MARGIN;
-      const qrSize = qrEnd - qrStart;
-      const safeModuleCount = Number.isFinite(moduleCount) && moduleCount > 0 ? moduleCount : 41;
-      const moduleSize = qrSize / safeModuleCount;
+      const fgColor = $('#fgColorDisplay').data('color');
+      const dotStyle = qrStyle || 'rounded';
+      const layout = getQRLayout(moduleCount, SIZE);
+      const moduleSize = layout.moduleSize;
+      const reserved = getLogoReservedArea(logoInfo, moduleCount, SIZE);
 
-      const maxLogoW = qrSize * logoSize;
-      const maxLogoH = qrSize * logoSize;
-      const fitted = fitRectToAspect(maxLogoW, maxLogoH, aspect);
-
-      // Reserve only the image area, snapped to whole QR modules. No extra image padding.
-      const modulesW = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.w / moduleSize)));
-      const modulesH = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.h / moduleSize)));
-      const moduleX = Math.floor((safeModuleCount - modulesW) / 2);
-      const moduleY = Math.floor((safeModuleCount - modulesH) / 2);
-
-      const clearX = qrStart + moduleX * moduleSize;
-      const clearY = qrStart + moduleY * moduleSize;
-      const clearW = modulesW * moduleSize;
-      const clearH = modulesH * moduleSize;
-
-      const draw = fitRectToAspect(clearW, clearH, aspect);
-      const drawX = clearX + (clearW - draw.w) / 2;
-      const drawY = clearY + (clearH - draw.h) / 2;
-
-      ctx.save();
       ctx.fillStyle = bgColor;
-      ctx.fillRect(clearX, clearY, clearW, clearH);
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      ctx.fillStyle = fgColor;
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(logoInfo.img, drawX, drawY, draw.w, draw.h);
-      ctx.restore();
+
+      const isReservedModule = (r, c) => {
+        return !!(
+          reserved &&
+          c >= reserved.moduleX &&
+          c < reserved.moduleX + reserved.modulesW &&
+          r >= reserved.moduleY &&
+          r < reserved.moduleY + reserved.modulesH
+        );
+      };
+      const isVisibleDark = (r, c) => {
+        return !!(
+          qrModel &&
+          r >= 0 && c >= 0 &&
+          r < moduleCount && c < moduleCount &&
+          qrModel.isDark(r, c) &&
+          !isReservedModule(r, c)
+        );
+      };
+
+      for (let row = 0; row < moduleCount; row++) {
+        for (let col = 0; col < moduleCount; col++) {
+          if (!isVisibleDark(row, col)) continue;
+
+          const x = layout.qrStart + col * moduleSize;
+          const y = layout.qrStart + row * moduleSize;
+          drawStyledModule(ctx, x, y, moduleSize, dotStyle, {
+            top: isVisibleDark(row - 1, col),
+            right: isVisibleDark(row, col + 1),
+            bottom: isVisibleDark(row + 1, col),
+            left: isVisibleDark(row, col - 1)
+          });
+        }
+      }
+
+      if (reserved && logoInfo) {
+        ctx.save();
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(
+          logoInfo.img,
+          Math.round(reserved.drawX),
+          Math.round(reserved.drawY),
+          Math.round(reserved.drawW),
+          Math.round(reserved.drawH)
+        );
+        ctx.restore();
+      }
+
+      return canvas;
     }
 
     async function generateQR(){
@@ -544,30 +1581,132 @@
       const logoInfo = await getLogoInfo(selectedLogo);
       if (runId !== qrRunId) return;
 
-      hiddenHolder.innerHTML='';
-      const qr=new QRCodeStyling({
-        width:SIZE,height:SIZE,margin:QR_MARGIN,data:txt,
-        dotsOptions:{ type: qrStyle, color: $('#fgColorDisplay').data('color') },
-        backgroundOptions:{ color: $('#bgColorDisplay').data('color') },
-        qrOptions:{errorCorrectionLevel:'H'}
-      });
-      qr.append(hiddenHolder);
-      setTimeout(()=>{
-        if (runId !== qrRunId) return;
-        const raw = $(hiddenHolder).find('canvas')[0];if(!raw)return;
-        baseCanvas=document.createElement('canvas');
-        baseCanvas.width=raw.width;baseCanvas.height=raw.height;
-        baseCanvas.getContext('2d').drawImage(raw,0,0);
-        drawLogoWithReservedSpace(baseCanvas, logoInfo, getQRModuleCount(qr));
+      try {
+        const selectedCorrection = selectErrorCorrection(txt, logoInfo);
+        errorCorrectionLevel = selectedCorrection.level;
+        updateErrorCorrectionLabel();
+
+        const qr=new QRCodeStyling({
+          width:SIZE,height:SIZE,margin:QR_MARGIN,data:txt,
+          dotsOptions:{ type: qrStyle, color: $('#fgColorDisplay').data('color') },
+          backgroundOptions:{ color: $('#bgColorDisplay').data('color') },
+          qrOptions:{errorCorrectionLevel:errorCorrectionLevel}
+        });
+
+        baseCanvas = drawQRToCanvas(qr, logoInfo);
         scheduleFrame();
-      },100);
+      } catch (error) {
+        baseCanvas = null;
+        $('#qrcode').empty().append(
+          $('<div>').addClass('text-danger small p-3 text-center').text(error && error.message ? error.message : 'Unable to generate this QR code.')
+        );
+      }
+    }
+
+    function getTemplateOptions() {
+      const enabled = $('#templateEnabled').prop('checked');
+      const text = $('#templateText').val().trim();
+      if (!enabled || !text) return null;
+
+      return {
+        text,
+        side: $('#templateSide').val(),
+        font: $('#templateFont').val(),
+        weight: $('#templateWeight').val(),
+        size: Math.max(12, Number($('#templateFontSize').val()) || 48),
+        gap: Math.max(0, Number($('#templateGap').val()) || 0),
+        color: $('#templateColorDisplay').data('color') || '#ffffff',
+        bg: $('#templateBgColorDisplay').data('color') || $('#bgColorDisplay').data('color') || '#000000'
+      };
+    }
+
+    function getFittedFont(ctx, lines, opt, maxWidth) {
+      let size = opt.size;
+      const contentLines = Array.isArray(lines) ? lines : [String(lines)];
+      const widestLine = () => Math.max(...contentLines.map(line => ctx.measureText(line || ' ').width));
+      ctx.font = `${opt.weight} ${size}px ${opt.font}`;
+
+      while (size > 12 * CANVAS_SCALE && widestLine() > maxWidth) {
+        size -= 2 * CANVAS_SCALE;
+        ctx.font = `${opt.weight} ${size}px ${opt.font}`;
+      }
+
+      return size;
+    }
+
+    function drawTemplateLines(ctx, lines, centerX, centerY, lineHeight) {
+      const totalHeight = lineHeight * lines.length;
+      const firstY = centerY - (totalHeight - lineHeight) / 2;
+      lines.forEach((line, index) => {
+        ctx.fillText(line, centerX, firstY + index * lineHeight);
+      });
+    }
+
+    function drawTemplate(canvas) {
+      const opt = getTemplateOptions();
+      if (!opt) return canvas;
+
+      const scaledOpt = {
+        ...opt,
+        size: opt.size * CANVAS_SCALE,
+        gap: opt.gap * CANVAS_SCALE
+      };
+      const lines = scaledOpt.text.split(/\r?\n/);
+      const isVertical = scaledOpt.side === 'left' || scaledOpt.side === 'right';
+      const padding = Math.round(scaledOpt.size * 0.55);
+      const measureCanvas = document.createElement('canvas');
+      const measureCtx = measureCanvas.getContext('2d');
+      const availableTextWidth = (isVertical ? canvas.height : canvas.width) - padding * 2;
+      const fittedSize = getFittedFont(measureCtx, lines, scaledOpt, availableTextWidth);
+      const lineHeight = fittedSize * 1.2;
+      const textBlockHeight = Math.max(lineHeight, lineHeight * lines.length);
+      const strip = Math.max(1, Math.ceil(textBlockHeight + scaledOpt.gap + padding * 2));
+      const out = document.createElement('canvas');
+      out.width = isVertical ? canvas.width + strip : canvas.width;
+      out.height = isVertical ? canvas.height : canvas.height + strip;
+
+      const ctx = out.getContext('2d');
+      ctx.fillStyle = scaledOpt.bg;
+      ctx.fillRect(0, 0, out.width, out.height);
+
+      const qrX = scaledOpt.side === 'left' ? strip : 0;
+      const qrY = scaledOpt.side === 'top' ? strip : 0;
+      ctx.drawImage(canvas, qrX, qrY);
+
+      ctx.fillStyle = scaledOpt.color;
+      ctx.font = `${scaledOpt.weight} ${fittedSize}px ${scaledOpt.font}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (scaledOpt.side === 'top' || scaledOpt.side === 'bottom') {
+        const y = scaledOpt.side === 'top' ? strip / 2 : canvas.height + strip / 2;
+        drawTemplateLines(ctx, lines, out.width / 2, y, lineHeight);
+      } else {
+        const x = scaledOpt.side === 'left' ? strip / 2 : canvas.width + strip / 2;
+        ctx.save();
+        ctx.translate(x, out.height / 2);
+        ctx.rotate(scaledOpt.side === 'left' ? -Math.PI / 2 : Math.PI / 2);
+        drawTemplateLines(ctx, lines, 0, 0, lineHeight);
+        ctx.restore();
+      }
+
+      return out;
     }
 
     function applyFrames(){
       if(!baseCanvas)return;
-      const frames=getFrames();
+      const frames=getFrames().map(f => ({
+        color: f.color,
+        thickness: f.thickness * CANVAS_SCALE,
+        outerFill: !!f.outerFill
+      }));
       let canvas;
-      if(!frames.length){canvas=baseCanvas.cloneNode(true);}
+      if(!frames.length){
+        canvas=document.createElement('canvas');
+        canvas.width=baseCanvas.width;
+        canvas.height=baseCanvas.height;
+        canvas.getContext('2d').drawImage(baseCanvas,0,0);
+      }
       else{
         const base=baseCanvas.width;
         const border=frames.reduce((s,f)=>s+f.thickness,0);
@@ -578,17 +1717,26 @@
         let off=0;
         for(let i=frames.length-1;i>=0;i--){
           const f=frames[i],side=size-2*off;
+          const distanceFromQr=border-off;
+          const radius=Math.min(QR_CORNER_RADIUS+distanceFromQr,side/2);
           ctx.fillStyle=f.color;
-          if(i===frames.length-1){ctx.fillRect(off,off,side,side);}
-          else{const r=Math.min(f.thickness*.8,side*.1);ctx.beginPath();ctx.roundRect(off,off,side,side,r);ctx.fill();}
+          if (f.outerFill) {
+            ctx.fillRect(off, off, side, side);
+          } else {
+            ctx.beginPath();
+            ctx.roundRect(off,off,side,side,radius);
+            ctx.fill();
+          }
           off+=f.thickness;
         }
-        const innerR=frames.length>1?Math.min(frames[0].thickness*.8,base*.1):0;
-        ctx.save();ctx.beginPath();
-        if(frames.length>1){ctx.roundRect(border,border,base,base,Math.max(0,innerR-frames[0].thickness*.2));}
-        else{ctx.rect(border,border,base,base);}
-        ctx.clip();ctx.drawImage(baseCanvas,border,border);ctx.restore();
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(border,border,base,base,Math.min(QR_CORNER_RADIUS,base/2));
+        ctx.clip();
+        ctx.drawImage(baseCanvas,border,border);
+        ctx.restore();
       }
+      canvas = drawTemplate(canvas);
       $('#qrcode').empty().append(canvas);
     }
 
