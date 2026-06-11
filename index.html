@@ -6,6 +6,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="src/css/bootstrap.min.css">
   <link rel="stylesheet" href="src/css/styles.css">
+
+  <style>
+    .image-size-control {
+      font-size: 13px;
+    }
+    .image-size-control input[type="range"] {
+      width: 100%;
+    }
+    .image-size-value {
+      min-width: 42px;
+      text-align: right;
+      font-weight: 600;
+      color: #495057;
+    }
+  </style>
 </head>
 <body>
   <div class="container-lg container-card bg-white rounded shadow p-4">
@@ -18,10 +33,15 @@
 
         <div class="mb-3">
           <input type="file" id="logoInput" multiple accept="image/*" class="form-control">
-          <div id="logoBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start mb-3 p-2 border rounded bg-light">
+          <div id="logoBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start mb-2 p-2 border rounded bg-light">
             <div class="add-image-btn" onclick="$('#logoInput').click()">
               <div>+</div><div>Add Image</div>
             </div>
+          </div>
+          <div class="image-size-control d-flex align-items-center gap-2 mb-3">
+            <label for="logoSizeDial" class="form-label mb-0 text-secondary">Image size</label>
+            <input type="range" id="logoSizeDial" class="form-range flex-grow-1" min="15" max="45" step="1" value="25">
+            <span id="logoSizeValue" class="image-size-value">25%</span>
           </div>
         </div>
 
@@ -81,8 +101,8 @@
   <script src="src/js/Sortable.min.js"></script>
   <script src="src/js/color-categories.js"></script>
   <script>
-    const SIZE=800,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120;
-    let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[];
+    const SIZE=800,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120,QR_MARGIN=20;
+    let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),qrRunId=0;
 
     const hiddenHolder = $('<div>').css({
       position: 'absolute',
@@ -232,6 +252,7 @@
           e.stopPropagation();
           const src = $(e.currentTarget).siblings('img').attr('src');
           logoUrls = logoUrls.filter(u => u !== src);
+          logoInfoCache.delete(src);
           if (selectedLogo === src) {
             selectedLogo = null;
             if (logoUrls.length) {
@@ -277,6 +298,7 @@
           e.stopPropagation();
           const src=$(e.currentTarget).siblings('img').attr('src');
           logoUrls=logoUrls.filter(u=>u!==src);
+          logoInfoCache.delete(src);
           if(selectedLogo===src){
             selectedLogo=null;
             if(logoUrls.length){selectedLogo=logoUrls[0];$('.logo-thumb').removeClass('selected');$(`img[src="${selectedLogo}"]`).addClass('selected');}
@@ -374,6 +396,13 @@
     /* ---- style picker ---- */
     const styleOptions = ['rounded','extra-rounded','square','dots','classy','classy-rounded'];
     let   qrStyle      = 'rounded';                // default
+    let   logoSize     = Number($('#logoSizeDial').val()) / 100;
+
+    $('#logoSizeDial').on('input', function() {
+      logoSize = Number(this.value) / 100;
+      $('#logoSizeValue').text(`${this.value}%`);
+      scheduleQR();
+    });
 
     styleOptions.forEach(opt=>{
       const icon = $('<div>')
@@ -393,23 +422,143 @@
     function scheduleQR(){clearTimeout(qrTimer);qrTimer=setTimeout(generateQR,QR_DELAY);}
     function scheduleFrame(){clearTimeout(frameTimer);frameTimer=setTimeout(applyFrames,FRAME_DELAY);}
 
-    function generateQR(){
+    function getLogoInfo(src) {
+      if (!src) return Promise.resolve(null);
+      if (logoInfoCache.has(src)) return logoInfoCache.get(src);
+
+      const promise = new Promise(resolve => {
+        const img = new Image();
+
+        img.onload = () => {
+          const w = img.naturalWidth || img.width;
+          const h = img.naturalHeight || img.height;
+          resolve(w && h ? { img, width: w, height: h } : null);
+        };
+
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+
+      logoInfoCache.set(src, promise);
+      return promise;
+    }
+
+    function getQRModuleCount(qr) {
+      const candidates = [
+        qr && qr._qr,
+        qr && qr._qrCode,
+        qr && qr._qrcode,
+        qr && qr.qrCode,
+        qr && qr.qrcode,
+        qr && qr._oQRCode,
+        qr && qr._drawing && qr._drawing._qr,
+        qr && qr._canvas && qr._canvas._qr,
+        qr && qr._svg && qr._svg._qr
+      ];
+
+      for (const item of candidates) {
+        if (!item) continue;
+        if (typeof item.getModuleCount === 'function') return item.getModuleCount();
+        if (Number.isFinite(item.moduleCount)) return item.moduleCount;
+        if (Number.isFinite(item.modulesCount)) return item.modulesCount;
+      }
+
+      if (qr && typeof qr === 'object') {
+        for (const key in qr) {
+          const item = qr[key];
+          if (!item || typeof item !== 'object') continue;
+          if (typeof item.getModuleCount === 'function') return item.getModuleCount();
+          if (Number.isFinite(item.moduleCount)) return item.moduleCount;
+          if (Number.isFinite(item.modulesCount)) return item.modulesCount;
+        }
+      }
+
+      return null;
+    }
+
+    function fitRectToAspect(maxW, maxH, aspect) {
+      let w = maxW;
+      let h = w / aspect;
+
+      if (h > maxH) {
+        h = maxH;
+        w = h * aspect;
+      }
+
+      return { w, h };
+    }
+
+    function snapDownToQRGrid(value, gridStart, moduleSize) {
+      return gridStart + Math.floor((value - gridStart) / moduleSize) * moduleSize;
+    }
+
+    function snapUpToQRGrid(value, gridStart, moduleSize) {
+      return gridStart + Math.ceil((value - gridStart) / moduleSize) * moduleSize;
+    }
+
+    function drawLogoWithReservedSpace(canvas, logoInfo, moduleCount) {
+      if (!logoInfo) return;
+
+      const ctx = canvas.getContext('2d');
+      const bgColor = $('#bgColorDisplay').data('color');
+      const aspect = logoInfo.width / logoInfo.height;
+      const qrStart = QR_MARGIN;
+      const qrEnd = canvas.width - QR_MARGIN;
+      const qrSize = qrEnd - qrStart;
+      const safeModuleCount = Number.isFinite(moduleCount) && moduleCount > 0 ? moduleCount : 41;
+      const moduleSize = qrSize / safeModuleCount;
+
+      const maxLogoW = qrSize * logoSize;
+      const maxLogoH = qrSize * logoSize;
+      const fitted = fitRectToAspect(maxLogoW, maxLogoH, aspect);
+
+      // Reserve only the image area, snapped to whole QR modules. No extra image padding.
+      const modulesW = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.w / moduleSize)));
+      const modulesH = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.h / moduleSize)));
+      const moduleX = Math.floor((safeModuleCount - modulesW) / 2);
+      const moduleY = Math.floor((safeModuleCount - modulesH) / 2);
+
+      const clearX = qrStart + moduleX * moduleSize;
+      const clearY = qrStart + moduleY * moduleSize;
+      const clearW = modulesW * moduleSize;
+      const clearH = modulesH * moduleSize;
+
+      const draw = fitRectToAspect(clearW, clearH, aspect);
+      const drawX = clearX + (clearW - draw.w) / 2;
+      const drawY = clearY + (clearH - draw.h) / 2;
+
+      ctx.save();
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(clearX, clearY, clearW, clearH);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(logoInfo.img, drawX, drawY, draw.w, draw.h);
+      ctx.restore();
+    }
+
+    async function generateQR(){
+      const runId = ++qrRunId;
       const txt=$('#qrtext').val().trim();
       if(!txt){$('#qrcode').empty();baseCanvas=null;return;}
+
+      const logoInfo = await getLogoInfo(selectedLogo);
+      if (runId !== qrRunId) return;
+
       hiddenHolder.innerHTML='';
       const qr=new QRCodeStyling({
-        width:SIZE,height:SIZE,margin:20,data:txt,image:selectedLogo||undefined,
-        imageOptions:{imageSize:.25,margin:10,hideBackgroundDots:true},
+        width:SIZE,height:SIZE,margin:QR_MARGIN,data:txt,
         dotsOptions:{ type: qrStyle, color: $('#fgColorDisplay').data('color') },
         backgroundOptions:{ color: $('#bgColorDisplay').data('color') },
         qrOptions:{errorCorrectionLevel:'H'}
       });
       qr.append(hiddenHolder);
       setTimeout(()=>{
+        if (runId !== qrRunId) return;
         const raw = $(hiddenHolder).find('canvas')[0];if(!raw)return;
         baseCanvas=document.createElement('canvas');
         baseCanvas.width=raw.width;baseCanvas.height=raw.height;
         baseCanvas.getContext('2d').drawImage(raw,0,0);
+        drawLogoWithReservedSpace(baseCanvas, logoInfo, getQRModuleCount(qr));
         scheduleFrame();
       },100);
     }
