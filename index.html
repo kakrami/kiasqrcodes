@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kia's QR-Codes</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="src/css/bootstrap.min.css">
+  <link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+  <div class="container-lg container-card bg-white rounded shadow p-4">
+    <div class="row g-4">
+      <!-- controls -->
+      <div class="col-12 col-lg-6">
+        <h5 class="fw-semibold text-secondary mb-2 text-center text-lg-start">Kia's QR Codes</h5>
+        <textarea id="qrtext" class="form-control mb-1" rows="4" placeholder="Enter text to encode…" maxlength="1500">ENTER TEXT HERE...</textarea>
+        <div id="counter" class="text-end mb-2">0 / 1500</div>
+
+        <div class="mb-3">
+          <input type="file" id="logoInput" multiple accept="image/*" class="form-control">
+          <div id="logoBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start mb-3 p-2 border rounded bg-light">
+            <div class="add-image-btn" onclick="$('#logoInput').click()">
+              <div>+</div><div>Add Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Color Pickers -->
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <div class="color-picker-container">
+              <div class="color-label">Foreground</div>
+              <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="fgColorDisplay"></div>
+              <div class="color-picker-dropdown" id="fgColorPicker">
+                <div class="color-palette" id="fgColorPalette"></div>
+                <div class="color-input-group">
+                  <input type="text" class="color-input" id="fgColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
+                  <input type="color" class="native-color-input" id="fgColorNative" value="#ffffff">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="color-picker-container">
+              <div class="color-label">Background</div>
+              <div class="color-display" data-color="#000000" style="--color-value:#000000" id="bgColorDisplay"></div>
+              <div class="color-picker-dropdown" id="bgColorPicker">
+                <div class="color-palette" id="bgColorPalette"></div>
+                <div class="color-input-group">
+                  <input type="text" class="color-input" id="bgColorInput" value="#000000" pattern="^#[0-9A-Fa-f]{6}$">
+                  <input type="color" class="native-color-input" id="bgColorNative" value="#000000">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Code Styles -->
+        <div class="mb-3">
+          <div id="styleBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start p-2 border rounded bg-light">
+          </div>
+        </div>
+
+        <!-- frames UI -->
+        <div id="framesSection" class="mb-3">
+          <div id="framesContainer" class="scrollable"></div>
+        </div>
+        <button id="addFrame" type="button" class="btn btn-outline-secondary btn-sm mb-3 w-100">+ Add Frame</button>
+      </div>
+
+      <!-- preview -->
+      <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
+        <div id="qrcode" class="blank-bg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="src/js/jquery.min.js"></script>
+  <script src="src/js/bootstrap.bundle.min.js"></script>
+  <script src="src/js/qr-code-styling.js"></script>
+  <script src="src/js/Sortable.min.js"></script>
+  <script src="src/js/color-categories.js"></script>
+  <script>
+    const SIZE=800,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120;
+    let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[];
+
+    const hiddenHolder = $('<div>').css({
+      position: 'absolute',
+      left: '-9999px',
+      top: '-9999px'
+    }).appendTo('body')[0];
+
+    function initColorPicker(displayId,pickerId,paletteId,inputId,nativeId,onChange){
+      const display=$(`#${displayId}`);
+      const picker=$(`#${pickerId}`);
+      const palette=$(`#${paletteId}`);
+      const input=$(`#${inputId}`);
+      const native=$(`#${nativeId}`);
+      palette.css({'max-height':'180px','overflow-y':'auto'});
+
+      colorPalette.forEach(col=>{
+        $('<div>')
+          .addClass('color-swatch')
+          .css('background-color', col)
+          .attr('data-color', col)
+          .on('click', () => { setColor(col); picker.removeClass('show'); })
+          .appendTo(palette);
+      });
+
+      function setColor(col){
+        display[0].style.setProperty('--color-value', col);
+        display.data('color', col);
+        input.val(col);
+        native.val(col);
+        palette.find('.color-swatch').each(function(){
+          $(this).toggleClass('selected', $(this).data('color') === col);
+        });
+        onChange(col);
+      }
+
+      display.on('click', e => {
+        e.stopPropagation();
+        $('.color-picker-dropdown').not(picker).removeClass('show');
+        picker.toggleClass('show');
+        if (!picker.hasClass('show')) return;
+
+        // 1) clear any old scale
+        picker.css('transform', '');
+
+        // 2) measure its real size
+        const naturalW = picker.outerWidth();
+        const naturalH = picker.outerHeight();
+
+        // 3) compute how much we need to shrink to fit
+        const availW = window.innerWidth  - 8;  // 4px margin each side
+        const availH = window.innerHeight - 8;
+        const scale  = Math.min(1, availW/naturalW, availH/naturalH);
+
+        // 4) apply uniform scale
+        picker.css({
+          transform:        `scale(${scale})`,
+          transformOrigin:  'top left'
+        });
+
+        // 5) compute its scaled size
+        const effW = naturalW * scale;
+        const effH = naturalH * scale;
+
+        // 6) position & clamp
+        const rect = display[0].getBoundingClientRect();
+        let top  = rect.bottom + 4;
+        if (top + effH > window.innerHeight) top = rect.top - effH - 4;
+        top = Math.max(0, Math.min(top, window.innerHeight - effH));
+
+        let left = rect.left;
+        left = Math.max(4, Math.min(left, window.innerWidth - effW - 4));
+
+        picker.css({ top: `${top}px`, left: `${left}px` });
+      });
+
+      input.on('input', e => {
+        const v = e.target.value;
+        if(/^#[0-9A-Fa-f]{6}$/.test(v)) setColor(v);
+      });
+      native.on('input', e => setColor(e.target.value));
+      setColor(display.attr('data-color'));
+      return{setColor};
+    }
+
+    const fgColorPicker=initColorPicker('fgColorDisplay','fgColorPicker','fgColorPalette','fgColorInput','fgColorNative',()=>scheduleQR());
+    const bgColorPicker=initColorPicker('bgColorDisplay','bgColorPicker','bgColorPalette','bgColorInput','bgColorNative',()=>scheduleQR());
+
+    $(document).on('click',e=>{
+      if(!$(e.target).closest('.color-picker-container').length){$('.color-picker-dropdown').removeClass('show');}
+    });
+
+    function createFrameColorPicker(container,initialColor,onChange){
+      const id = 'frame' + Date.now() + Math.floor(Math.random()*1e6);
+      container.innerHTML=`
+        <div class="color-picker-container flex-grow-1">
+          <div class="color-display" data-color="${initialColor}" style="--color-value:${initialColor};height:30px" id="${id}D"></div>
+          <div class="color-picker-dropdown" id="${id}P">
+            <div class="color-palette" id="${id}Pal"></div>
+            <div class="color-input-group">
+              <input type="text" class="color-input" id="${id}I" value="${initialColor}" pattern="^#[0-9A-Fa-f]{6}$">
+              <input type="color" class="native-color-input" id="${id}N" value="${initialColor}">
+            </div>
+          </div>`;
+      const picker=initColorPicker(`${id}D`,`${id}P`,`${id}Pal`,`${id}I`,`${id}N`,onChange);
+      frameColorPickers.push(picker);
+      return picker;
+    }
+
+    const preloadImages = [
+      'src/img/sonic.png',
+      'src/img/Mario.png',
+    ];
+
+    // --- "No Image" / Clear Logo option (always first in the bar) ---
+    const noLogoContainer = $('<div>').addClass('logo-container no-logo');
+    const noLogoThumb = $('<div>')
+      .addClass('logo-thumb no-logo-thumb')
+      .css({
+        'background-color': '#f1f3f5',
+        'display': 'flex',
+        'align-items': 'center',
+        'justify-content': 'center',
+        'font-size': '12px',
+        'color': '#495057',
+        'font-weight': '600',
+        'letter-spacing': '0.5px'
+      })
+      .text('None');
+    noLogoContainer.append(noLogoThumb);
+    noLogoThumb.on('click', function() {
+      $('.logo-thumb').removeClass('selected');
+      $(this).addClass('selected');
+      selectedLogo = null;
+      scheduleQR();
+    });
+    // Insert as the very first item (before preloaded logos + Add button)
+    $('#logoBar').prepend(noLogoContainer);
+
+    preloadImages.forEach(url => {
+      logoUrls.push(url);
+      const c = $('<div>').addClass('logo-container');
+      const img = $('<img>', { src: url, class: 'logo-thumb' });
+      const rm = $('<button>', {
+        class: 'remove-logo btn-close',
+        html: 'X',
+        click: e => {
+          e.stopPropagation();
+          const src = $(e.currentTarget).siblings('img').attr('src');
+          logoUrls = logoUrls.filter(u => u !== src);
+          if (selectedLogo === src) {
+            selectedLogo = null;
+            if (logoUrls.length) {
+              selectedLogo = logoUrls[0];
+              $('.logo-thumb').removeClass('selected');
+              $(`img[src="${selectedLogo}"]`).addClass('selected');
+            } else {
+              // No logos left → visually select the "None" option
+              $('.logo-thumb').removeClass('selected');
+              $('.no-logo-thumb').addClass('selected');
+            }
+            scheduleQR();
+          }
+          $(e.currentTarget).closest('.logo-container').fadeOut(300, function () {
+            $(this).remove();
+          });
+        }
+      });
+
+      img.on('load', function () {
+        c.append(img).append(rm);
+        $('.add-image-btn').before(c);
+        img.on('click', function () {
+          $('.logo-thumb').removeClass('selected');
+          $(this).addClass('selected');
+          selectedLogo = this.src;
+          scheduleQR();
+        });
+        if (!selectedLogo) {
+          img.click();
+        }
+      });
+    });
+
+
+    $('#logoInput').on('change',function(){
+      [...this.files].forEach(file=>{
+        const url=URL.createObjectURL(file);
+        logoUrls.push(url);
+        const c=$('<div>').addClass('logo-container');
+        const img=$('<img>',{src:url,class:'logo-thumb'});
+        const rm=$('<button>',{class:'remove-logo btn-close',html:'X',click:e=>{
+          e.stopPropagation();
+          const src=$(e.currentTarget).siblings('img').attr('src');
+          logoUrls=logoUrls.filter(u=>u!==src);
+          if(selectedLogo===src){
+            selectedLogo=null;
+            if(logoUrls.length){selectedLogo=logoUrls[0];$('.logo-thumb').removeClass('selected');$(`img[src="${selectedLogo}"]`).addClass('selected');}
+            else {
+              // No logos left → visually select the "None" option
+              $('.logo-thumb').removeClass('selected');
+              $('.no-logo-thumb').addClass('selected');
+            }
+            scheduleQR();
+          }
+          $(e.currentTarget).closest('.logo-container').fadeOut(300,function(){$(this).remove();});
+          URL.revokeObjectURL(src);
+        }});
+        img.on('load',function(){
+          c.append(img).append(rm);
+          $('.add-image-btn').before(c);
+          img.on('click',function(){$('.logo-thumb').removeClass('selected');$(this).addClass('selected');selectedLogo=this.src;scheduleQR();});
+          if(!selectedLogo){img.click();}
+        });
+      });
+      this.value='';
+    });
+
+    function addFrame(color = '#000000', thickness = 12) {
+      const item = $('<div>')
+        .addClass('frame-item')
+        .html(`
+          <span class="drag-handle">☰</span>
+          <button type="button" class="remove-frame-btn">X</button>
+          <div class="frame-controls">
+            <div class="frame-color-picker"></div>
+            <div>
+              <input type="number"
+                    class="form-control frame-thickness-input"
+                    min="1"
+                    max="100"
+                    value="${Math.min(thickness,100)}"
+                    size="2">
+            </div>
+          </div>
+        `);
+
+      $('#framesContainer').append(item);
+
+      // color picker
+      createFrameColorPicker(
+        item.find('.frame-color-picker')[0],
+        color,
+        scheduleFrame
+      );
+
+      // thickness change
+      item.find('.frame-thickness-input').on('input', scheduleFrame);
+
+      // always allow removal
+      item.find('.remove-frame-btn').on('click', () => {
+        item.css({ opacity: 0, transform: 'scale(.8)', transition: '.3s' });
+        setTimeout(() => {
+          item.remove();
+          scheduleFrame();
+        }, 300);
+      });
+
+      scheduleFrame();
+    }
+
+    $('#addFrame').on('click',()=>addFrame());
+
+    function getFrames() {
+      // implicit first frame = current bg color @ 24px
+      const frames = [{
+        color: $('#bgColorDisplay').data('color'),
+        thickness: 36
+      }];
+
+      // then any real frames the user added
+      $('#framesContainer .frame-item').each(function() {
+        const color = $(this).find('.color-display').data('color');
+        const thick = Math.min(100,
+          parseInt($(this).find('.frame-thickness-input').val(), 10) || 0
+        );
+        if (thick > 0) frames.push({ color, thickness: thick });
+      });
+
+      return frames;
+    }
+
+    new Sortable($('#framesContainer')[0], {
+      animation:150,
+      handle:'.drag-handle',
+      onEnd:()=>scheduleFrame()
+    });
+
+    $('#qrtext').on('input',function(){$('#counter').text(`${this.value.length} / ${MAX_LEN}`);scheduleQR();});
+    /* ---- style picker ---- */
+    const styleOptions = ['rounded','extra-rounded','square','dots','classy','classy-rounded'];
+    let   qrStyle      = 'rounded';                // default
+
+    styleOptions.forEach(opt=>{
+      const icon = $('<div>')
+        .addClass(`style-icon style-${opt}`)
+        .append('<div class="dot-shape"></div>')
+        .on('click',function(){
+          $('.style-icon').removeClass('selected');
+          $(this).addClass('selected');
+          qrStyle = opt;
+          scheduleQR();
+        });
+      $('#styleBar').append(icon);
+    });
+    $('#styleBar .style-icon').first().addClass('selected');
+
+
+    function scheduleQR(){clearTimeout(qrTimer);qrTimer=setTimeout(generateQR,QR_DELAY);}
+    function scheduleFrame(){clearTimeout(frameTimer);frameTimer=setTimeout(applyFrames,FRAME_DELAY);}
+
+    function generateQR(){
+      const txt=$('#qrtext').val().trim();
+      if(!txt){$('#qrcode').empty();baseCanvas=null;return;}
+      hiddenHolder.innerHTML='';
+      const qr=new QRCodeStyling({
+        width:SIZE,height:SIZE,margin:20,data:txt,image:selectedLogo||undefined,
+        imageOptions:{imageSize:.25,margin:10,hideBackgroundDots:true},
+        dotsOptions:{ type: qrStyle, color: $('#fgColorDisplay').data('color') },
+        backgroundOptions:{ color: $('#bgColorDisplay').data('color') },
+        qrOptions:{errorCorrectionLevel:'H'}
+      });
+      qr.append(hiddenHolder);
+      setTimeout(()=>{
+        const raw = $(hiddenHolder).find('canvas')[0];if(!raw)return;
+        baseCanvas=document.createElement('canvas');
+        baseCanvas.width=raw.width;baseCanvas.height=raw.height;
+        baseCanvas.getContext('2d').drawImage(raw,0,0);
+        scheduleFrame();
+      },100);
+    }
+
+    function applyFrames(){
+      if(!baseCanvas)return;
+      const frames=getFrames();
+      let canvas;
+      if(!frames.length){canvas=baseCanvas.cloneNode(true);}
+      else{
+        const base=baseCanvas.width;
+        const border=frames.reduce((s,f)=>s+f.thickness,0);
+        const size=base+2*border;
+        canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
+        const ctx=canvas.getContext('2d');
+        ctx.clearRect(0,0,size,size);
+        let off=0;
+        for(let i=frames.length-1;i>=0;i--){
+          const f=frames[i],side=size-2*off;
+          ctx.fillStyle=f.color;
+          if(i===frames.length-1){ctx.fillRect(off,off,side,side);}
+          else{const r=Math.min(f.thickness*.8,side*.1);ctx.beginPath();ctx.roundRect(off,off,side,side,r);ctx.fill();}
+          off+=f.thickness;
+        }
+        const innerR=frames.length>1?Math.min(frames[0].thickness*.8,base*.1):0;
+        ctx.save();ctx.beginPath();
+        if(frames.length>1){ctx.roundRect(border,border,base,base,Math.max(0,innerR-frames[0].thickness*.2));}
+        else{ctx.rect(border,border,base,base);}
+        ctx.clip();ctx.drawImage(baseCanvas,border,border);ctx.restore();
+      }
+      $('#qrcode').empty().append(canvas);
+    }
+
+    scheduleQR();
+  </script>
+</body>
+</html>
