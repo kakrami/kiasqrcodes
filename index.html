@@ -316,6 +316,15 @@
     .template-color-pair {
       margin-bottom: .5rem;
     }
+    .palette-suggestion-divider {
+      background: #dee2e6;
+      flex-basis: 100%;
+      height: 1px;
+      margin: 4px 0 5px;
+    }
+    .color-swatch.image-suggested-swatch {
+      box-shadow: 0 0 0 1px rgba(13,110,253,.18);
+    }
     .frame-item {
       padding: 0 !important;
     }
@@ -400,10 +409,14 @@
       overscroll-behavior: contain;
       padding-right: 3px;
     }
+    .download-qr-btn {
+      margin-top: 10px;
+      min-width: 150px;
+    }
     .save-hint {
       color: #6c757d;
       font-size: 12px;
-      margin-top: 8px;
+      margin-top: 6px;
       text-align: center;
     }
     #templateText {
@@ -629,7 +642,10 @@
           <div class="d-flex justify-content-center align-items-start">
             <div id="qrcode" class="blank-bg"></div>
           </div>
-          <div class="save-hint">ⓘ Right-click the QR code and choose “Save image as…”</div>
+          <div class="d-flex justify-content-center">
+            <button id="downloadQrBtn" type="button" class="btn btn-primary btn-sm download-qr-btn" disabled>Download PNG</button>
+          </div>
+          <div class="save-hint">ⓘ You can also right-click the QR code and choose “Save image as…”</div>
         </div>
       </div>
     </div>
@@ -642,8 +658,9 @@
   <script src="src/js/color-categories.js"></script>
   <script>
     const DISPLAY_SIZE=800,CANVAS_SCALE=2,SIZE=DISPLAY_SIZE*CANVAS_SCALE,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120,QR_MARGIN=20*CANVAS_SCALE,QR_CORNER_RADIUS=8*CANVAS_SCALE;
-    let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),qrRunId=0;
-    let templateTextColorPicker=null,templateBgColorPicker=null;
+    let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),logoColorCache=new Map(),qrRunId=0;
+    let templateTextColorPicker=null,templateBgColorPicker=null,currentSuggestedColors=[];
+    const allColorPickers=[];
 
     const hiddenHolder = $('<div>').css({
       position: 'absolute',
@@ -659,14 +676,33 @@
       const native=$(`#${nativeId}`);
       palette.css({'max-height':'180px','overflow-y':'auto'});
 
-      colorPalette.forEach(col=>{
-        $('<div>')
-          .addClass('color-swatch')
+      function addSwatch(col, className = '') {
+        return $('<div>')
+          .addClass(`color-swatch ${className}`.trim())
           .css('background-color', col)
           .attr('data-color', col)
-          .on('click', () => { setColor(col, 'user'); picker.removeClass('show'); })
-          .appendTo(palette);
-      });
+          .attr('title', col.toUpperCase())
+          .on('click', () => { setColor(col, 'user'); picker.removeClass('show'); });
+      }
+
+      colorPalette.forEach(col=>addSwatch(col).appendTo(palette));
+
+      function setSuggestedColors(colors = []) {
+        palette.find('.image-suggested-swatch, .palette-suggestion-divider').remove();
+        const unique = [...new Set(colors.map(color => String(color).toLowerCase()))].slice(0, 10);
+        if (!unique.length) return;
+
+        const divider = $('<div>').addClass('palette-suggestion-divider');
+        palette.prepend(divider);
+        unique.slice().reverse().forEach(col => {
+          palette.prepend(addSwatch(col, 'image-suggested-swatch'));
+        });
+
+        const activeColor = String(display.data('color') || '').toLowerCase();
+        palette.find('.color-swatch').each(function(){
+          $(this).toggleClass('selected', String($(this).data('color')).toLowerCase() === activeColor);
+        });
+      }
 
       function setColor(col, source = 'api'){
         display[0].style.setProperty('--color-value', col);
@@ -674,7 +710,7 @@
         input.val(col);
         native.val(col);
         palette.find('.color-swatch').each(function(){
-          $(this).toggleClass('selected', $(this).data('color') === col);
+          $(this).toggleClass('selected', String($(this).data('color')).toLowerCase() === String(col).toLowerCase());
         });
         onChange(col, source);
       }
@@ -685,29 +721,20 @@
         picker.toggleClass('show');
         if (!picker.hasClass('show')) return;
 
-        // 1) clear any old scale
         picker.css('transform', '');
-
-        // 2) measure its real size
         const naturalW = picker.outerWidth();
         const naturalH = picker.outerHeight();
-
-        // 3) compute how much we need to shrink to fit
-        const availW = window.innerWidth  - 8;  // 4px margin each side
+        const availW = window.innerWidth  - 8;
         const availH = window.innerHeight - 8;
         const scale  = Math.min(1, availW/naturalW, availH/naturalH);
 
-        // 4) apply uniform scale
         picker.css({
           transform:        `scale(${scale})`,
           transformOrigin:  'top left'
         });
 
-        // 5) compute its scaled size
         const effW = naturalW * scale;
         const effH = naturalH * scale;
-
-        // 6) position & clamp
         const rect = display[0].getBoundingClientRect();
         let top  = rect.bottom + 4;
         if (top + effH > window.innerHeight) top = rect.top - effH - 4;
@@ -715,7 +742,6 @@
 
         let left = rect.left;
         left = Math.max(4, Math.min(left, window.innerWidth - effW - 4));
-
         picker.css({ top: `${top}px`, left: `${left}px` });
       });
 
@@ -725,7 +751,101 @@
       });
       native.on('input', e => setColor(e.target.value, 'user'));
       setColor(display.attr('data-color'), 'init');
-      return{setColor};
+
+      const api={setColor,setSuggestedColors};
+      allColorPickers.push(api);
+      setSuggestedColors(currentSuggestedColors);
+      return api;
+    }
+
+    function rgbToHex(r, g, b) {
+      return `#${[r, g, b].map(value => Math.max(0, Math.min(255, value)).toString(16).padStart(2, '0')).join('')}`;
+    }
+
+    function colorDistance(a, b) {
+      const dr = a.r - b.r;
+      const dg = a.g - b.g;
+      const db = a.b - b.b;
+      return Math.sqrt(dr * dr + dg * dg + db * db);
+    }
+
+    function extractDominantColors(img, maxColors = 10) {
+      if (!img || !(img.naturalWidth || img.width) || !(img.naturalHeight || img.height)) return [];
+
+      const sampleSize = 128;
+      const canvas = document.createElement('canvas');
+      const aspect = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
+      canvas.width = aspect >= 1 ? sampleSize : Math.max(1, Math.round(sampleSize * aspect));
+      canvas.height = aspect >= 1 ? Math.max(1, Math.round(sampleSize / aspect)) : sampleSize;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+      try {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const buckets = new Map();
+
+        for (let i = 0; i < pixels.length; i += 4) {
+          const alpha = pixels[i + 3];
+          if (alpha < 160) continue;
+
+          const sourceR = pixels[i];
+          const sourceG = pixels[i + 1];
+          const sourceB = pixels[i + 2];
+          const qr = Math.min(255, Math.round(sourceR / 16) * 16);
+          const qg = Math.min(255, Math.round(sourceG / 16) * 16);
+          const qb = Math.min(255, Math.round(sourceB / 16) * 16);
+          const key = `${qr},${qg},${qb}`;
+          const bucket = buckets.get(key) || { count: 0, sumR: 0, sumG: 0, sumB: 0 };
+          bucket.count += 1;
+          bucket.sumR += sourceR;
+          bucket.sumG += sourceG;
+          bucket.sumB += sourceB;
+          buckets.set(key, bucket);
+        }
+
+        const ranked = [...buckets.values()]
+          .sort((a, b) => b.count - a.count)
+          .map(bucket => ({
+            r: Math.round(bucket.sumR / bucket.count),
+            g: Math.round(bucket.sumG / bucket.count),
+            b: Math.round(bucket.sumB / bucket.count),
+            count: bucket.count
+          }));
+
+        const selected = [];
+        for (const candidate of ranked) {
+          if (selected.every(existing => colorDistance(candidate, existing) >= 42)) {
+            selected.push(candidate);
+            if (selected.length >= maxColors) break;
+          }
+        }
+
+        return selected.map(color => rgbToHex(color.r, color.g, color.b));
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function applySuggestedColors(colors = []) {
+      currentSuggestedColors = colors.slice(0, 10);
+      allColorPickers.forEach(picker => picker.setSuggestedColors(currentSuggestedColors));
+    }
+
+    function updateSuggestedColorsForImage(img) {
+      if (!img || !img.src) {
+        applySuggestedColors([]);
+        return;
+      }
+
+      const cacheKey = img.currentSrc || img.src;
+      if (logoColorCache.has(cacheKey)) {
+        applySuggestedColors(logoColorCache.get(cacheKey));
+        return;
+      }
+
+      const colors = extractDominantColors(img, 10);
+      logoColorCache.set(cacheKey, colors);
+      applySuggestedColors(colors);
     }
 
     function syncMatchedFrameColors() {
@@ -842,6 +962,7 @@
       $('.logo-thumb').removeClass('selected');
       $(this).addClass('selected');
       selectedLogo = null;
+      applySuggestedColors([]);
       scheduleQR();
     });
     // Insert as the very first item (before preloaded logos + Add button)
@@ -859,16 +980,19 @@
           const src = $(e.currentTarget).siblings('img').attr('src');
           logoUrls = logoUrls.filter(u => u !== src);
           logoInfoCache.delete(src);
+          logoColorCache.delete(src);
           if (selectedLogo === src) {
             selectedLogo = null;
             if (logoUrls.length) {
               selectedLogo = logoUrls[0];
               $('.logo-thumb').removeClass('selected');
-              $(`img[src="${selectedLogo}"]`).addClass('selected');
+              const nextLogo = $(`img[src="${selectedLogo}"]`).addClass('selected')[0];
+              updateSuggestedColorsForImage(nextLogo);
             } else {
               // No logos left → visually select the "None" option
               $('.logo-thumb').removeClass('selected');
               $('.no-logo-thumb').addClass('selected');
+              applySuggestedColors([]);
             }
             scheduleQR();
           }
@@ -885,6 +1009,7 @@
           $('.logo-thumb').removeClass('selected');
           $(this).addClass('selected');
           selectedLogo = this.src;
+          updateSuggestedColorsForImage(this);
           scheduleQR();
         });
         if (!selectedLogo) {
@@ -895,7 +1020,8 @@
 
 
     $('#logoInput').on('change',function(){
-      [...this.files].forEach(file=>{
+      const addedFiles = [...this.files];
+      addedFiles.forEach((file, fileIndex)=>{
         const url=URL.createObjectURL(file);
         logoUrls.push(url);
         const c=$('<div>').addClass('logo-container');
@@ -905,13 +1031,20 @@
           const src=$(e.currentTarget).siblings('img').attr('src');
           logoUrls=logoUrls.filter(u=>u!==src);
           logoInfoCache.delete(src);
+          logoColorCache.delete(src);
           if(selectedLogo===src){
             selectedLogo=null;
-            if(logoUrls.length){selectedLogo=logoUrls[0];$('.logo-thumb').removeClass('selected');$(`img[src="${selectedLogo}"]`).addClass('selected');}
+            if(logoUrls.length){
+              selectedLogo=logoUrls[0];
+              $('.logo-thumb').removeClass('selected');
+              const nextLogo=$(`img[src="${selectedLogo}"]`).addClass('selected')[0];
+              updateSuggestedColorsForImage(nextLogo);
+            }
             else {
               // No logos left → visually select the "None" option
               $('.logo-thumb').removeClass('selected');
               $('.no-logo-thumb').addClass('selected');
+              applySuggestedColors([]);
             }
             scheduleQR();
           }
@@ -921,8 +1054,8 @@
         img.on('load',function(){
           c.append(img).append(rm);
           $('.add-image-btn').before(c);
-          img.on('click',function(){$('.logo-thumb').removeClass('selected');$(this).addClass('selected');selectedLogo=this.src;scheduleQR();});
-          if(!selectedLogo){img.click();}
+          img.on('click',function(){$('.logo-thumb').removeClass('selected');$(this).addClass('selected');selectedLogo=this.src;updateSuggestedColorsForImage(this);scheduleQR();});
+          if(fileIndex===0){img.click();}
         });
       });
       this.value='';
@@ -1576,7 +1709,12 @@
     async function generateQR(){
       const runId = ++qrRunId;
       const txt=$('#qrtext').val().trim();
-      if(!txt){$('#qrcode').empty();baseCanvas=null;return;}
+      if(!txt){
+        $('#qrcode').empty();
+        $('#downloadQrBtn').prop('disabled', true);
+        baseCanvas=null;
+        return;
+      }
 
       const logoInfo = await getLogoInfo(selectedLogo);
       if (runId !== qrRunId) return;
@@ -1738,7 +1876,36 @@
       }
       canvas = drawTemplate(canvas);
       $('#qrcode').empty().append(canvas);
+      $('#downloadQrBtn').prop('disabled', false);
     }
+
+    $('#downloadQrBtn').on('click', function() {
+      const canvas = $('#qrcode canvas')[0];
+      if (!canvas) return;
+
+      const triggerDownload = blob => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'qr-code.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      };
+
+      if (canvas.toBlob) {
+        canvas.toBlob(triggerDownload, 'image/png');
+      } else {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'qr-code.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+    });
 
     scheduleQR();
   </script>
