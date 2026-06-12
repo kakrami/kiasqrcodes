@@ -564,12 +564,41 @@
             <div class="col-6">
               <label for="templateFont" class="form-label">Font</label>
               <select id="templateFont" class="form-select form-select-sm">
-                <option value="Arial" selected>Arial</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Trebuchet MS">Trebuchet MS</option>
+                <optgroup label="Sans serif">
+                  <option value="Arial, sans-serif" selected>Arial</option>
+                  <option value="Arial Black, Arial, sans-serif">Arial Black</option>
+                  <option value="Verdana, sans-serif">Verdana</option>
+                  <option value="Tahoma, sans-serif">Tahoma</option>
+                  <option value="Trebuchet MS, sans-serif">Trebuchet MS</option>
+                  <option value="Segoe UI, sans-serif">Segoe UI</option>
+                  <option value="Calibri, sans-serif">Calibri</option>
+                  <option value="Helvetica, Arial, sans-serif">Helvetica</option>
+                  <option value="Century Gothic, sans-serif">Century Gothic</option>
+                  <option value="Franklin Gothic Medium, Arial, sans-serif">Franklin Gothic</option>
+                  <option value="Gill Sans, sans-serif">Gill Sans</option>
+                  <option value="Impact, sans-serif">Impact</option>
+                </optgroup>
+                <optgroup label="Serif">
+                  <option value="Georgia, serif">Georgia</option>
+                  <option value="Times New Roman, serif">Times New Roman</option>
+                  <option value="Garamond, serif">Garamond</option>
+                  <option value="Palatino Linotype, serif">Palatino</option>
+                  <option value="Book Antiqua, serif">Book Antiqua</option>
+                  <option value="Cambria, serif">Cambria</option>
+                  <option value="Baskerville, serif">Baskerville</option>
+                </optgroup>
+                <optgroup label="Monospace">
+                  <option value="Courier New, monospace">Courier New</option>
+                  <option value="Consolas, monospace">Consolas</option>
+                  <option value="Lucida Console, monospace">Lucida Console</option>
+                  <option value="Monaco, monospace">Monaco</option>
+                </optgroup>
+                <optgroup label="Display">
+                  <option value="Comic Sans MS, cursive">Comic Sans</option>
+                  <option value="Brush Script MT, cursive">Brush Script</option>
+                  <option value="Copperplate, fantasy">Copperplate</option>
+                  <option value="Papyrus, fantasy">Papyrus</option>
+                </optgroup>
               </select>
             </div>
           </div>
@@ -763,60 +792,97 @@
     }
 
     function colorDistance(a, b) {
+      // Red-mean distance better matches perceived color differences than plain RGB.
+      const rMean = (a.r + b.r) / 2;
       const dr = a.r - b.r;
       const dg = a.g - b.g;
       const db = a.b - b.b;
-      return Math.sqrt(dr * dr + dg * dg + db * db);
+      return Math.sqrt(
+        (2 + rMean / 256) * dr * dr +
+        4 * dg * dg +
+        (2 + (255 - rMean) / 256) * db * db
+      );
     }
 
     function extractDominantColors(img, maxColors = 10) {
       if (!img || !(img.naturalWidth || img.width) || !(img.naturalHeight || img.height)) return [];
 
-      const sampleSize = 128;
+      const sourceWidth = img.naturalWidth || img.width;
+      const sourceHeight = img.naturalHeight || img.height;
+      const maxSampleDimension = 420;
+      const scale = Math.min(1, maxSampleDimension / Math.max(sourceWidth, sourceHeight));
       const canvas = document.createElement('canvas');
-      const aspect = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
-      canvas.width = aspect >= 1 ? sampleSize : Math.max(1, Math.round(sampleSize * aspect));
-      canvas.height = aspect >= 1 ? Math.max(1, Math.round(sampleSize / aspect)) : sampleSize;
+      canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+      canvas.height = Math.max(1, Math.round(sourceHeight * scale));
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
       try {
+        // Nearest-neighbor sampling preserves actual source pixel values instead of
+        // creating averaged colors during the analysis resize.
+        ctx.imageSmoothingEnabled = false;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         const buckets = new Map();
+        const bucketStep = 8;
 
         for (let i = 0; i < pixels.length; i += 4) {
           const alpha = pixels[i + 3];
           if (alpha < 160) continue;
 
-          const sourceR = pixels[i];
-          const sourceG = pixels[i + 1];
-          const sourceB = pixels[i + 2];
-          const qr = Math.min(255, Math.round(sourceR / 16) * 16);
-          const qg = Math.min(255, Math.round(sourceG / 16) * 16);
-          const qb = Math.min(255, Math.round(sourceB / 16) * 16);
-          const key = `${qr},${qg},${qb}`;
-          const bucket = buckets.get(key) || { count: 0, sumR: 0, sumG: 0, sumB: 0 };
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          const bucketR = Math.floor(r / bucketStep);
+          const bucketG = Math.floor(g / bucketStep);
+          const bucketB = Math.floor(b / bucketStep);
+          const bucketKey = `${bucketR},${bucketG},${bucketB}`;
+          const exactKey = `${r},${g},${b}`;
+          let bucket = buckets.get(bucketKey);
+
+          if (!bucket) {
+            bucket = { count: 0, exact: new Map() };
+            buckets.set(bucketKey, bucket);
+          }
+
           bucket.count += 1;
-          bucket.sumR += sourceR;
-          bucket.sumG += sourceG;
-          bucket.sumB += sourceB;
-          buckets.set(key, bucket);
+          bucket.exact.set(exactKey, (bucket.exact.get(exactKey) || 0) + 1);
         }
 
+        // Each cluster is represented by a real pixel from the image—the most
+        // frequent exact color inside that cluster—rather than an averaged shade.
         const ranked = [...buckets.values()]
-          .sort((a, b) => b.count - a.count)
-          .map(bucket => ({
-            r: Math.round(bucket.sumR / bucket.count),
-            g: Math.round(bucket.sumG / bucket.count),
-            b: Math.round(bucket.sumB / bucket.count),
-            count: bucket.count
-          }));
+          .map(bucket => {
+            let representative = null;
+            let representativeCount = -1;
+            bucket.exact.forEach((count, key) => {
+              if (count > representativeCount) {
+                representativeCount = count;
+                representative = key;
+              }
+            });
+            const [r, g, b] = representative.split(',').map(Number);
+            return { r, g, b, count: bucket.count, exactCount: representativeCount };
+          })
+          .sort((a, b) => (b.count - a.count) || (b.exactCount - a.exactCount));
 
         const selected = [];
+        const minimumDistance = 36;
         for (const candidate of ranked) {
-          if (selected.every(existing => colorDistance(candidate, existing) >= 42)) {
+          if (selected.every(existing => colorDistance(candidate, existing) >= minimumDistance)) {
             selected.push(candidate);
             if (selected.length >= maxColors) break;
+          }
+        }
+
+        // If the image contains only very similar shades, fill remaining slots with
+        // the next most common exact colors instead of returning fewer unnecessarily.
+        if (selected.length < maxColors) {
+          for (const candidate of ranked) {
+            if (selected.some(existing => existing.r === candidate.r && existing.g === candidate.g && existing.b === candidate.b)) continue;
+            if (selected.every(existing => colorDistance(candidate, existing) >= 18)) {
+              selected.push(candidate);
+              if (selected.length >= maxColors) break;
+            }
           }
         }
 
