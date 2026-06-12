@@ -15,13 +15,43 @@
       font-weight: 700;
       margin-bottom: 0.75rem;
     }
+    .container-card {
+      max-width: 1280px;
+    }
+    @media (min-width: 992px) {
+      .preview-column {
+        min-width: 0;
+      }
+      .preview-qr-wrap {
+        justify-content: center;
+      }
+      #qrcode.blank-bg {
+        margin-inline: auto;
+        max-width: 460px;
+      }
+    }
+    @media (min-width: 1200px) {
+      .container-card .row > .col-lg-4:not(.preview-column) {
+        flex: 0 0 31%;
+        max-width: 31%;
+      }
+      .container-card .preview-column {
+        flex: 0 0 38%;
+        max-width: 38%;
+      }
+    }
     .preview-panel {
       align-items: start;
       display: grid;
       gap: 10px;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) 34px;
       position: sticky;
       top: 20px;
+      width: 100%;
+    }
+    .preview-qr-wrap {
+      min-width: 0;
+      width: 100%;
     }
     .advanced-panel {
       overflow: hidden;
@@ -350,7 +380,7 @@
       align-items: center;
       background: transparent;
       border: 0;
-      border-radius: 6px;
+      border-radius: 5px;
       color: #212529;
       cursor: pointer;
       display: grid;
@@ -433,23 +463,20 @@
       border-radius: 6px;
     }
     .template-color-line {
-      align-items: center;
-      display: flex;
-      gap: 7px;
+      display: block;
     }
     .template-color-line .template-color-picker {
-      flex: 1 1 auto;
       min-width: 0;
+      width: 100%;
     }
     .template-color-match {
       align-items: center;
       color: #6c757d;
       display: flex;
-      flex: 0 0 auto;
       font-size: 11px;
       gap: 4px;
       line-height: 1;
-      margin: 0;
+      margin: 0 0 5px;
       white-space: nowrap;
     }
     .template-color-match input {
@@ -616,12 +643,6 @@
       height: 17px;
       width: 17px;
     }
-    .save-hint {
-      color: #6c757d;
-      font-size: 12px;
-      margin-top: 6px;
-      text-align: center;
-    }
     #templateText {
       min-height: 70px;
       resize: vertical;
@@ -700,9 +721,6 @@
       .preview-actions {
         margin-top: 0;
       }
-      .save-hint {
-        display: none;
-      }
       .preview-panel.mobile-preview-expanded {
         grid-template-columns: minmax(0, 1fr) auto;
       }
@@ -751,6 +769,423 @@
       max-width: 100%;
       width: 100% !important;
     }
+
+
+    /* Modern local color controls */
+    .color-picker-container {
+      min-width: 0;
+    }
+    .qr-paint-picker,
+    .compact-paint-picker {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+    }
+    .compact-paint-picker .color-display {
+      height: 34px !important;
+    }
+    .frame-color-picker .compact-paint-picker {
+      width: 100%;
+    }
+    .qr-paint-picker .color-label {
+      background: transparent;
+      box-shadow: none;
+      color: #475569;
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      left: auto;
+      letter-spacing: .02em;
+      margin: 0 0 6px 2px;
+      padding: 0;
+      position: static;
+      text-transform: uppercase;
+      top: auto;
+    }
+    .color-display {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(15,23,42,.06);
+      height: 42px;
+      overflow: hidden;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .color-display:hover,
+    .color-display:focus-visible {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,.14), 0 3px 10px rgba(15,23,42,.08);
+      outline: 0;
+      transform: translateY(-1px);
+    }
+    .color-display::before {
+      background: var(--paint-preview, var(--color-value));
+      border-radius: 9px;
+      bottom: 3px;
+      left: 3px;
+      right: 3px;
+      top: 3px;
+    }
+    .paint-mode-badge {
+      align-items: center;
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 999px;
+      bottom: 7px;
+      color: #334155;
+      display: inline-flex;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      padding: 2px 6px;
+      pointer-events: none;
+      position: absolute;
+      right: 7px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .color-picker-dropdown {
+      background: rgba(255,255,255,.98);
+      border: 1px solid #dbe3ee;
+      border-radius: 13px;
+      box-shadow: 0 14px 42px rgba(15,23,42,.18);
+      box-sizing: border-box;
+      max-height: calc(100dvh - 12px);
+      max-width: calc(100vw - 12px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 9px;
+      scrollbar-gutter: stable;
+      width: min(304px, calc(100vw - 12px));
+    }
+    .paint-mode-switch {
+      background: #eef2f7;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      display: grid;
+      gap: 3px;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 4px;
+      padding: 2px;
+    }
+    .paint-mode-btn {
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 7px;
+      transition: background .15s ease, box-shadow .15s ease, color .15s ease;
+    }
+    .paint-mode-btn.active {
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(15,23,42,.12);
+      color: #0f172a;
+    }
+    .gradient-controls {
+      display: none;
+      margin-bottom: 7px;
+    }
+    .gradient-controls.show {
+      display: block;
+    }
+    .color-stop-inputs {
+      display: grid;
+      gap: 3px;
+      grid-template-columns: 1fr;
+      margin-bottom: 7px;
+    }
+    .color-stop-inputs.gradient-active {
+      grid-template-columns: 1fr 1fr;
+    }
+    .color-stop-input[data-gradient-stop="1"] {
+      display: none;
+    }
+    .color-stop-inputs.gradient-active .color-stop-input[data-gradient-stop="1"] {
+      display: grid;
+    }
+    .color-stop-input.active {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,.12);
+    }
+    .color-stop-inputs.gradient-active .color-input {
+      font-size: 11px;
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    .gradient-angle-row {
+      align-items: center;
+      display: grid;
+      gap: 6px;
+      grid-template-columns: auto minmax(0,1fr) 42px;
+    }
+    .gradient-angle-row label {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .gradient-angle-input {
+      height: 20px;
+      min-width: 0;
+    }
+    .gradient-angle-value {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      color: #334155;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      text-align: center;
+    }
+    .color-palette {
+      display: block;
+      margin-bottom: 6px;
+      max-height: 168px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 1px 2px 3px;
+      scrollbar-gutter: stable;
+    }
+    .palette-section-label {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      margin: 1px 0 4px;
+      text-transform: uppercase;
+    }
+    .palette-suggested-section {
+      margin-bottom: 5px;
+    }
+    .palette-suggested-section[hidden] {
+      display: none;
+    }
+    .palette-image-grid,
+    .palette-family-row {
+      display: grid;
+      gap: 3px;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+    }
+    .palette-family-grid {
+      display: grid;
+      gap: 3px;
+    }
+    .palette-family-row {
+      border-radius: 8px;
+      position: relative;
+    }
+    .color-swatch {
+      aspect-ratio: 1 / 1;
+      border: 1px solid rgba(15,23,42,.13);
+      border-radius: 5px;
+      cursor: pointer;
+      height: auto;
+      min-width: 0;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      width: 100%;
+    }
+    .color-swatch:hover {
+      border-color: rgba(59,130,246,.72);
+      box-shadow: 0 3px 8px rgba(15,23,42,.14);
+      transform: translateY(-1px) scale(1.06);
+      z-index: 1;
+    }
+    .color-swatch.selected {
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3b82f6;
+      outline: 0;
+      z-index: 2;
+    }
+    .color-input-group {
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      display: grid;
+      gap: 5px;
+      grid-template-columns: 24px minmax(0,1fr);
+      padding: 3px;
+      transition: border-color .14s ease, box-shadow .14s ease;
+    }
+    .active-color-chip {
+      border: 1px solid rgba(15,23,42,.15);
+      border-radius: 6px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
+      cursor: pointer;
+      height: 24px;
+      padding: 0;
+      width: 24px;
+    }
+    .color-input {
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 0;
+      padding: 4px 5px;
+      text-transform: uppercase;
+      width: 100%;
+    }
+    .color-input:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(59,130,246,.16);
+      outline: 0;
+    }
+    .custom-color-editor {
+      border-top: 1px solid #e8edf4;
+      margin-top: 6px;
+      padding-top: 6px;
+    }
+    .custom-color-editor-title {
+      align-items: center;
+      color: #64748b;
+      display: flex;
+      font-size: 10px;
+      font-weight: 800;
+      justify-content: space-between;
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .custom-color-axis-grid {
+      align-items: end;
+      display: grid;
+      gap: 6px;
+      grid-template-columns: 28px minmax(0,1fr) 36px;
+    }
+    .custom-axis-wrap {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+    .custom-axis-label {
+      color: #64748b;
+      font-size: 8px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .custom-saturation-slider,
+    .custom-brightness-slider {
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+      cursor: ns-resize;
+      height: 84px;
+      position: relative;
+      touch-action: none;
+      width: 14px;
+    }
+    .custom-axis-cursor {
+      background: #fff;
+      border: 1px solid rgba(15,23,42,.45);
+      border-radius: 999px;
+      box-shadow: 0 2px 5px rgba(15,23,42,.25);
+      height: 7px;
+      left: 50%;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      width: 22px;
+    }
+    .custom-color-spectrum {
+      background-color: #f00;
+      background-image:
+        linear-gradient(to top, #000, transparent),
+        linear-gradient(to right, #fff, transparent);
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 12px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+      cursor: crosshair;
+      height: 84px;
+      overflow: hidden;
+      position: relative;
+      touch-action: none;
+      width: 100%;
+    }
+    .custom-color-spectrum-cursor {
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(15,23,42,.75), 0 2px 5px rgba(15,23,42,.28);
+      height: 14px;
+      left: 100%;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      width: 14px;
+    }
+    .custom-hue-wrap {
+      align-items: center;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: auto minmax(0,1fr);
+      margin-top: 6px;
+    }
+    .custom-hue-label {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .custom-hue-slider {
+      background: linear-gradient(90deg,
+        #f00 0%, #ff0 16.667%, #0f0 33.333%, #0ff 50%,
+        #00f 66.667%, #f0f 83.333%, #f00 100%);
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 999px;
+      cursor: ew-resize;
+      height: 14px;
+      position: relative;
+      touch-action: none;
+    }
+    .custom-hue-cursor {
+      background: #fff;
+      border: 1px solid rgba(15,23,42,.45);
+      border-radius: 999px;
+      box-shadow: 0 2px 5px rgba(15,23,42,.25);
+      height: 20px;
+      left: 0;
+      pointer-events: none;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+    }
+    @media (max-width: 575.98px) {
+      .color-pair-grid {
+        gap: 7px;
+        grid-template-columns: minmax(0,1fr) 30px minmax(0,1fr);
+      }
+      .color-swap-btn {
+        height: 29px;
+        width: 29px;
+      }
+      .qr-paint-picker {
+        padding: 6px;
+      }
+      .palette-image-grid,
+      .palette-family-row {
+        gap: 4px;
+        grid-template-columns: repeat(10, minmax(0,1fr));
+      }
+      .custom-color-spectrum,
+      .custom-saturation-slider,
+      .custom-brightness-slider {
+        height: 104px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -784,26 +1219,24 @@
         </div>
 
         <div class="color-pair-grid mb-3">
-          <div class="color-picker-container">
+          <div class="color-picker-container qr-paint-picker">
             <div class="color-label">Foreground</div>
             <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="fgColorDisplay"></div>
             <div class="color-picker-dropdown" id="fgColorPicker">
               <div class="color-palette" id="fgColorPalette"></div>
               <div class="color-input-group">
                 <input type="text" class="color-input" id="fgColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
-                <input type="color" class="native-color-input" id="fgColorNative" value="#ffffff">
               </div>
             </div>
           </div>
           <button type="button" id="swapQrColors" class="color-swap-btn" title="Swap foreground and background colors" aria-label="Swap foreground and background colors">⇄</button>
-          <div class="color-picker-container">
+          <div class="color-picker-container qr-paint-picker">
             <div class="color-label">Background</div>
             <div class="color-display" data-color="#000000" style="--color-value:#000000" id="bgColorDisplay"></div>
             <div class="color-picker-dropdown" id="bgColorPicker">
               <div class="color-palette" id="bgColorPalette"></div>
               <div class="color-input-group">
                 <input type="text" class="color-input" id="bgColorInput" value="#000000" pattern="^#[0-9A-Fa-f]{6}$">
-                <input type="color" class="native-color-input" id="bgColorNative" value="#000000">
               </div>
             </div>
           </div>
@@ -918,42 +1351,20 @@
             </select>
           </div>
 
-          <div class="color-pair-grid template-color-pair">
-            <div>
-              <label class="form-label">Text</label>
-              <div class="template-color-line">
-                <div class="color-picker-container template-color-picker">
-                  <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="templateColorDisplay"></div>
-                  <div class="color-picker-dropdown" id="templateColorPicker">
-                    <div class="color-palette" id="templateColorPalette"></div>
-                    <div class="color-input-group">
-                      <input type="text" class="color-input" id="templateColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
-                      <input type="color" class="native-color-input" id="templateColorNative" value="#ffffff">
-                    </div>
+          <div class="mb-2">
+            <label class="form-label">Text color</label>
+            <div class="template-color-line">
+              <label class="template-color-match" title="Match foreground color">
+                <input type="checkbox" id="templateTextMatchFg"> ✓ Fore
+              </label>
+              <div class="color-picker-container qr-paint-picker compact-paint-picker template-color-picker flex-grow-1">
+                <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="templateColorDisplay"></div>
+                <div class="color-picker-dropdown" id="templateColorPicker">
+                  <div class="color-palette" id="templateColorPalette"></div>
+                  <div class="color-input-group">
+                    <input type="text" class="color-input" id="templateColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
                   </div>
                 </div>
-                <label class="template-color-match" title="Match foreground color">
-                  <input type="checkbox" id="templateTextMatchFg"> ✓ Fore
-                </label>
-              </div>
-            </div>
-            <button type="button" id="swapTemplateColors" class="color-swap-btn" title="Swap template text and background colors" aria-label="Swap template text and background colors">⇄</button>
-            <div>
-              <label class="form-label">Back</label>
-              <div class="template-color-line">
-                <div class="color-picker-container template-color-picker">
-                  <div class="color-display" data-color="#000000" style="--color-value:#000000" id="templateBgColorDisplay"></div>
-                  <div class="color-picker-dropdown" id="templateBgColorPicker">
-                    <div class="color-palette" id="templateBgColorPalette"></div>
-                    <div class="color-input-group">
-                      <input type="text" class="color-input" id="templateBgColorInput" value="#000000" pattern="^#[0-9A-Fa-f]{6}$">
-                      <input type="color" class="native-color-input" id="templateBgColorNative" value="#000000">
-                    </div>
-                  </div>
-                </div>
-                <label class="template-color-match" title="Match background color">
-                  <input type="checkbox" id="templateBackMatchBg"> ✓ Back
-                </label>
               </div>
             </div>
           </div>
@@ -993,7 +1404,6 @@
                 </svg>
               </button>
             </div>
-            <div class="save-hint">ⓘ You can also right-click the QR code and choose “Save image as…”</div>
           </div>
         </div>
       </div>
@@ -1009,9 +1419,22 @@
   <script src="src/js/color-categories.js"></script>
   <script>
     const DISPLAY_SIZE=800,CANVAS_SCALE=2,SIZE=DISPLAY_SIZE*CANVAS_SCALE,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120,QR_MARGIN=20*CANVAS_SCALE,QR_CORNER_RADIUS=8*CANVAS_SCALE;
-    let selectedLogo=null,baseCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),logoColorCache=new Map(),qrRunId=0;
-    let templateTextColorPicker=null,templateBgColorPicker=null,currentSuggestedColors=[];
+    let selectedLogo=null,baseCanvas=null,finalCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),logoColorCache=new Map(),qrRunId=0;
+    let templateTextColorPicker=null,currentSuggestedColors=[];
     const allColorPickers=[];
+    const ORGANIZED_COLOR_ROWS = [
+      { name:'Neutral', colors:['#000000','#1f2937','#374151','#4b5563','#6b7280','#9ca3af','#d1d5db','#e5e7eb','#f3f4f6','#ffffff'] },
+      { name:'Red', colors:['#450a0a','#7f1d1d','#991b1b','#b91c1c','#dc2626','#ef4444','#f87171','#fca5a5','#fecaca','#fef2f2'] },
+      { name:'Orange', colors:['#431407','#7c2d12','#9a3412','#c2410c','#ea580c','#f97316','#fb923c','#fdba74','#fed7aa','#fff7ed'] },
+      { name:'Yellow', colors:['#422006','#713f12','#854d0e','#a16207','#ca8a04','#eab308','#facc15','#fde047','#fef08a','#fefce8'] },
+      { name:'Green', colors:['#052e16','#14532d','#166534','#15803d','#16a34a','#22c55e','#4ade80','#86efac','#bbf7d0','#f0fdf4'] },
+      { name:'Teal', colors:['#042f2e','#134e4a','#115e59','#0f766e','#0d9488','#14b8a6','#2dd4bf','#5eead4','#99f6e4','#f0fdfa'] },
+      { name:'Cyan', colors:['#083344','#164e63','#155e75','#0e7490','#0891b2','#06b6d4','#22d3ee','#67e8f9','#a5f3fc','#ecfeff'] },
+      { name:'Blue', colors:['#172554','#1e3a8a','#1e40af','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#93c5fd','#bfdbfe','#eff6ff'] },
+      { name:'Indigo', colors:['#1e1b4b','#312e81','#3730a3','#4338ca','#4f46e5','#6366f1','#818cf8','#a5b4fc','#c7d2fe','#eef2ff'] },
+      { name:'Violet', colors:['#2e1065','#4c1d95','#5b21b6','#6d28d9','#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe','#f5f3ff'] },
+      { name:'Pink', colors:['#500724','#831843','#9d174d','#be185d','#db2777','#ec4899','#f472b6','#f9a8d4','#fbcfe8','#fdf2f8'] }
+    ];
 
     const hiddenHolder = $('<div>').css({
       position: 'absolute',
@@ -1041,91 +1464,474 @@
       advancedMobileQuery.addListener(placeAdvancedSection);
     }
 
-    function initColorPicker(displayId,pickerId,paletteId,inputId,nativeId,onChange){
+    function initColorPicker(displayId,pickerId,paletteId,inputId,nativeId,onChange,options = {}){
       const display=$(`#${displayId}`);
       const picker=$(`#${pickerId}`);
       const palette=$(`#${paletteId}`);
       const input=$(`#${inputId}`);
-      const native=$(`#${nativeId}`);
-      palette.css({'max-height':'180px','overflow-y':'auto'});
+      const allowGradient=!!options.allowGradient;
+      const initialColor=String(display.attr('data-color') || '#000000').toLowerCase();
+      const state={
+        type:'solid',
+        colors:[initialColor, String(options.secondColor || (initialColor === '#ffffff' ? '#0d6efd' : '#ffffff')).toLowerCase()],
+        angle:Number.isFinite(Number(options.angle)) ? Number(options.angle) : 90,
+        activeStop:0,
+        editorHue:[0,0],
+        editorSaturation:[0,0],
+        editorBrightness:[1,1]
+      };
 
-      function addSwatch(col, className = '') {
-        return $('<div>')
-          .addClass(`color-swatch ${className}`.trim())
-          .css('background-color', col)
-          .attr('data-color', col)
-          .attr('title', col.toUpperCase())
-          .on('click', () => { setColor(col, 'user'); picker.removeClass('show'); });
+      if (allowGradient) {
+        display.append('<span class="paint-mode-badge">Solid</span>');
+        picker.prepend(`
+          <div class="paint-mode-switch" role="group" aria-label="Color type">
+            <button type="button" class="paint-mode-btn active" data-paint-mode="solid">Solid</button>
+            <button type="button" class="paint-mode-btn" data-paint-mode="gradient">Gradient</button>
+          </div>
+          <div class="gradient-controls">
+            <div class="gradient-angle-row">
+              <label>Angle</label>
+              <input type="range" class="form-range range-modern gradient-angle-input" min="0" max="360" step="5" value="${state.angle}" aria-label="Gradient angle">
+              <span class="gradient-angle-value">${state.angle}°</span>
+            </div>
+          </div>`);
       }
 
-      colorPalette.forEach(col=>addSwatch(col).appendTo(palette));
+      palette.empty().append(`
+        <div class="palette-suggested-section" hidden>
+          <div class="palette-section-label">Image colors</div>
+          <div class="palette-image-grid"></div>
+        </div>
+        <div class="palette-section-label">Color shades</div>
+        <div class="palette-family-grid"></div>`);
 
-      function setSuggestedColors(colors = []) {
-        palette.find('.image-suggested-swatch, .palette-suggestion-divider').remove();
-        const unique = [...new Set(colors.map(color => String(color).toLowerCase()))].slice(0, 10);
-        if (!unique.length) return;
+      const inputGroup=input.closest('.color-input-group');
+      inputGroup.addClass('color-stop-input active').attr('data-gradient-stop','0');
+      const activeChip=$('<button type="button" class="active-color-chip" aria-label="Edit this color"></button>');
+      inputGroup.prepend(activeChip);
 
-        const divider = $('<div>').addClass('palette-suggestion-divider');
-        palette.prepend(divider);
-        unique.slice().reverse().forEach(col => {
-          palette.prepend(addSwatch(col, 'image-suggested-swatch'));
-        });
+      const colorStopInputs=$('<div class="color-stop-inputs"></div>');
+      if (allowGradient) picker.find('.paint-mode-switch').after(colorStopInputs);
+      else picker.prepend(colorStopInputs);
+      colorStopInputs.append(inputGroup);
 
-        const activeColor = String(display.data('color') || '').toLowerCase();
+      const colorInputs=[input];
+      const colorChips=[activeChip];
+      if (allowGradient) {
+        const secondInput=$('<input type="text" class="color-input" pattern="^#[0-9A-Fa-f]{6}$" aria-label="Second gradient color">');
+        const secondChip=$('<button type="button" class="active-color-chip" aria-label="Edit this color"></button>');
+        const secondGroup=$('<div class="color-input-group color-stop-input" data-gradient-stop="1"></div>');
+        secondGroup.append(secondChip,secondInput);
+        colorStopInputs.append(secondGroup);
+        colorInputs.push(secondInput);
+        colorChips.push(secondChip);
+      }
+
+      const customEditor=$( `
+        <div class="custom-color-editor">
+          <div class="custom-color-editor-title"><span>Custom color</span><span class="custom-color-value"></span></div>
+          <div class="custom-color-axis-grid">
+            <div class="custom-axis-wrap">
+              <span class="custom-axis-label">Sat</span>
+              <div class="custom-saturation-slider" role="slider" aria-label="Color saturation" tabindex="0">
+                <span class="custom-axis-cursor"></span>
+              </div>
+            </div>
+            <div class="custom-color-spectrum" role="slider" aria-label="Color saturation and brightness" tabindex="0">
+              <span class="custom-color-spectrum-cursor"></span>
+            </div>
+            <div class="custom-axis-wrap">
+              <span class="custom-axis-label">Bright</span>
+              <div class="custom-brightness-slider" role="slider" aria-label="Color brightness" tabindex="0">
+                <span class="custom-axis-cursor"></span>
+              </div>
+            </div>
+          </div>
+          <div class="custom-hue-wrap">
+            <span class="custom-hue-label">Hue</span>
+            <div class="custom-hue-slider" role="slider" aria-label="Color hue" tabindex="0">
+              <span class="custom-hue-cursor"></span>
+            </div>
+          </div>
+        </div>`);
+      picker.append(customEditor);
+
+      const spectrum=customEditor.find('.custom-color-spectrum');
+      const spectrumCursor=customEditor.find('.custom-color-spectrum-cursor');
+      const saturationSlider=customEditor.find('.custom-saturation-slider');
+      const saturationCursor=saturationSlider.find('.custom-axis-cursor');
+      const brightnessSlider=customEditor.find('.custom-brightness-slider');
+      const brightnessCursor=brightnessSlider.find('.custom-axis-cursor');
+      const hueSlider=customEditor.find('.custom-hue-slider');
+      const hueCursor=customEditor.find('.custom-hue-cursor');
+      const customValue=customEditor.find('.custom-color-value');
+
+      function clamp(value,min=0,max=1){ return Math.max(min,Math.min(max,value)); }
+      function normalizeColor(col) {
+        const value=String(col || '').trim();
+        return /^#[0-9A-Fa-f]{6}$/.test(value) ? value.toLowerCase() : '#000000';
+      }
+      function hexToRgbLocal(hex){
+        const value=normalizeColor(hex).slice(1);
+        return {r:parseInt(value.slice(0,2),16),g:parseInt(value.slice(2,4),16),b:parseInt(value.slice(4,6),16)};
+      }
+      function rgbToHsvLocal(r,g,b){
+        r/=255;g/=255;b/=255;
+        const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+        let h=0;
+        if(d){
+          if(max===r) h=((g-b)/d)%6;
+          else if(max===g) h=(b-r)/d+2;
+          else h=(r-g)/d+4;
+          h*=60;if(h<0)h+=360;
+        }
+        return {h,s:max===0?0:d/max,v:max};
+      }
+      function hsvToRgbLocal(h,s,v){
+        const c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;
+        let rp=0,gp=0,bp=0;
+        if(h<60){rp=c;gp=x;} else if(h<120){rp=x;gp=c;} else if(h<180){gp=c;bp=x;}
+        else if(h<240){gp=x;bp=c;} else if(h<300){rp=x;bp=c;} else {rp=c;bp=x;}
+        return {r:Math.round((rp+m)*255),g:Math.round((gp+m)*255),b:Math.round((bp+m)*255)};
+      }
+      function rgbObjectToHex(rgb){ return rgbToHex(rgb.r,rgb.g,rgb.b); }
+
+      // Keep HSV editor state separate from the rounded RGB hex value. This makes
+      // brightness adjustments move in one clean direction and preserves hue and
+      // saturation when brightness reaches zero.
+      state.colors.forEach((color,index)=>{
+        const rgb=hexToRgbLocal(color);
+        const hsv=rgbToHsvLocal(rgb.r,rgb.g,rgb.b);
+        state.editorHue[index]=hsv.h;
+        state.editorSaturation[index]=hsv.s;
+        state.editorBrightness[index]=hsv.v;
+      });
+
+      function getPaint() {
+        return {
+          type: allowGradient ? state.type : 'solid',
+          color1: state.colors[0],
+          color2: state.colors[1],
+          angle: state.angle
+        };
+      }
+
+      function updateSelectedSwatch() {
+        const activeColor=state.colors[state.activeStop];
         palette.find('.color-swatch').each(function(){
           $(this).toggleClass('selected', String($(this).data('color')).toLowerCase() === activeColor);
         });
       }
 
-      function setColor(col, source = 'api'){
-        display[0].style.setProperty('--color-value', col);
-        display.data('color', col);
-        input.val(col);
-        native.val(col);
-        palette.find('.color-swatch').each(function(){
-          $(this).toggleClass('selected', String($(this).data('color')).toLowerCase() === String(col).toLowerCase());
-        });
-        onChange(col, source);
+      function updateCustomEditor(){
+        const activeColor=state.colors[state.activeStop];
+        const hue=state.editorHue[state.activeStop] || 0;
+        const saturation=clamp(state.editorSaturation[state.activeStop]);
+        const brightness=clamp(state.editorBrightness[state.activeStop]);
+
+        spectrum.css('background-color',`hsl(${hue} 100% 50%)`);
+        spectrumCursor.css({left:`${saturation*100}%`,top:`${(1-brightness)*100}%`});
+
+        const saturationLow=rgbObjectToHex(hsvToRgbLocal(hue,0,brightness));
+        const saturationHigh=rgbObjectToHex(hsvToRgbLocal(hue,1,brightness));
+        saturationSlider.css('background',`linear-gradient(to top, ${saturationLow}, ${saturationHigh})`);
+        saturationCursor.css('top',`${(1-saturation)*100}%`);
+
+        const brightnessHigh=rgbObjectToHex(hsvToRgbLocal(hue,saturation,1));
+        brightnessSlider.css('background',`linear-gradient(to top, #000000, ${brightnessHigh})`);
+        brightnessCursor.css('top',`${(1-brightness)*100}%`);
+
+        hueCursor.css('left',`${(hue/360)*100}%`);
+        colorChips.forEach((chip,index)=>chip.css('background',state.colors[index]));
+        customValue.text(activeColor.toUpperCase());
+        spectrum.attr({'aria-valuetext':activeColor.toUpperCase(),'aria-valuenow':Math.round(saturation*100)});
+        saturationSlider.attr({'aria-valuetext':`${Math.round(saturation*100)} percent`,'aria-valuenow':Math.round(saturation*100)});
+        brightnessSlider.attr({'aria-valuetext':`${Math.round(brightness*100)} percent`,'aria-valuenow':Math.round(brightness*100)});
+        hueSlider.attr({'aria-valuetext':`${Math.round(hue)} degrees`,'aria-valuenow':Math.round(hue)});
       }
 
-      display.on('click', e => {
+      function updateUi(source='api', notify=true) {
+        const activeColor=state.colors[state.activeStop];
+        const preview=state.type === 'gradient'
+          ? `linear-gradient(${state.angle}deg, ${state.colors[0]} 0%, ${state.colors[1]} 100%)`
+          : state.colors[0];
+
+        display[0].style.setProperty('--color-value', state.colors[0]);
+        display[0].style.setProperty('--paint-preview', preview);
+        display.data('color', state.colors[0]);
+        display.data('paint-type', state.type);
+        display.data('paint-color-2', state.colors[1]);
+        display.data('paint-angle', state.angle);
+        display.find('.paint-mode-badge').text(state.type === 'gradient' ? 'Gradient' : 'Solid');
+
+        colorInputs.forEach((field,index)=>field.val(state.colors[index].toUpperCase()));
+        colorStopInputs.toggleClass('gradient-active', allowGradient && state.type === 'gradient');
+        colorStopInputs.find('.color-stop-input').each(function(){
+          $(this).toggleClass('active', Number($(this).data('gradient-stop')) === state.activeStop);
+        });
+        updateSelectedSwatch();
+        updateCustomEditor();
+
+        if (allowGradient) {
+          picker.find('.paint-mode-btn').toggleClass('active', false)
+            .filter(`[data-paint-mode="${state.type}"]`).addClass('active');
+          picker.find('.gradient-controls').toggleClass('show', state.type === 'gradient');
+          picker.find('.gradient-angle-input').val(state.angle);
+          picker.find('.gradient-angle-value').text(`${state.angle}°`);
+          const angleInput=picker.find('.gradient-angle-input')[0];
+          if (angleInput && typeof updateRangeFill === 'function') updateRangeFill(angleInput);
+        }
+
+        if (notify) onChange(state.colors[0], source, getPaint());
+      }
+
+      function addSwatch(col, className = '') {
+        const normalized=normalizeColor(col);
+        return $('<button type="button">')
+          .addClass(`color-swatch ${className}`.trim())
+          .css('background-color', normalized)
+          .attr('data-color', normalized)
+          .attr('title', normalized.toUpperCase())
+          .attr('aria-label',`Choose ${normalized.toUpperCase()}`)
+          .on('click', () => { setColor(normalized, 'user'); });
+      }
+
+      const familyGrid=palette.find('.palette-family-grid');
+      ORGANIZED_COLOR_ROWS.forEach(row=>{
+        const familyRow=$('<div class="palette-family-row">').attr('aria-label',`${row.name} shades`);
+        row.colors.forEach(col=>familyRow.append(addSwatch(col)));
+        familyGrid.append(familyRow);
+      });
+
+      function setSuggestedColors(colors = []) {
+        const section=palette.find('.palette-suggested-section');
+        const grid=palette.find('.palette-image-grid').empty();
+        const unique=[...new Set(colors.map(color=>normalizeColor(color)))].slice(0,10);
+        unique.forEach(col=>grid.append(addSwatch(col,'image-suggested-swatch')));
+        section.prop('hidden',!unique.length);
+        updateSelectedSwatch();
+      }
+
+      function setColor(col, source = 'api', hsvOverride = null){
+        const index=state.activeStop;
+        state.colors[index]=normalizeColor(col);
+
+        if(hsvOverride) {
+          const hue=Number(hsvOverride.h);
+          state.editorHue[index]=Number.isFinite(hue) ? ((hue % 360) + 360) % 360 : state.editorHue[index];
+          state.editorSaturation[index]=clamp(Number(hsvOverride.s));
+          state.editorBrightness[index]=clamp(Number(hsvOverride.v));
+        } else {
+          const rgb=hexToRgbLocal(state.colors[index]);
+          const hsv=rgbToHsvLocal(rgb.r,rgb.g,rgb.b);
+          state.editorBrightness[index]=hsv.v;
+
+          // At pure black, RGB contains no hue or saturation information. Preserve
+          // the previous values so raising brightness restores the same color.
+          if(hsv.v > .001) {
+            state.editorSaturation[index]=hsv.s;
+            if(hsv.s > .001) state.editorHue[index]=hsv.h;
+          }
+        }
+
+        updateUi(source, true);
+      }
+
+      function setPaint(paint={}, source='api') {
+        state.type=allowGradient && paint.type === 'gradient' ? 'gradient' : 'solid';
+        state.colors[0]=normalizeColor(paint.color1 || paint.color || state.colors[0]);
+        state.colors[1]=normalizeColor(paint.color2 || state.colors[1]);
+        state.angle=Math.max(0, Math.min(360, Number(paint.angle) || 0));
+        state.colors.forEach((color,index)=>{
+          const rgb=hexToRgbLocal(color),hsv=rgbToHsvLocal(rgb.r,rgb.g,rgb.b);
+          state.editorBrightness[index]=hsv.v;
+          if(hsv.v > .001) {
+            state.editorSaturation[index]=hsv.s;
+            if(hsv.s > .001) state.editorHue[index]=hsv.h;
+          }
+        });
+        state.activeStop=0;
+        updateUi(source, true);
+      }
+
+      function setMode(mode, source='user') {
+        state.type=allowGradient && mode === 'gradient' ? 'gradient' : 'solid';
+        if (state.type === 'solid') state.activeStop=0;
+        updateUi(source, true);
+      }
+
+      function positionPicker() {
+        if (!picker.hasClass('show')) return;
+
+        picker.css({
+          transform: 'none',
+          maxHeight: 'calc(100dvh - 16px)'
+        });
+
+        const rect = display[0].getBoundingClientRect();
+        const viewportW = window.innerWidth;
+        const viewportH = window.innerHeight;
+        const pickerW = Math.min(picker.outerWidth(), viewportW - 16);
+        const spaceBelow = viewportH - rect.bottom - 8;
+        const spaceAbove = rect.top - 8;
+        const openBelow = spaceBelow >= Math.min(picker[0].scrollHeight, 420) || spaceBelow >= spaceAbove;
+        const availableH = Math.max(120, openBelow ? spaceBelow : spaceAbove);
+
+        picker.css({
+          width: `${pickerW}px`,
+          maxHeight: `${Math.min(viewportH - 16, availableH)}px`
+        });
+
+        const renderedH = picker.outerHeight();
+        let top = openBelow ? rect.bottom + 5 : rect.top - renderedH - 5;
+        top = Math.max(8, Math.min(top, viewportH - renderedH - 8));
+
+        let left = rect.left;
+        left = Math.max(8, Math.min(left, viewportW - pickerW - 8));
+        picker.css({ top: `${top}px`, left: `${left}px` });
+      }
+
+      function pointerPosition(event,element){
+        const nativeEvent=event.originalEvent || event;
+        const point=(nativeEvent.touches && nativeEvent.touches[0]) ||
+          (nativeEvent.changedTouches && nativeEvent.changedTouches[0]) || nativeEvent;
+        const rect=element.getBoundingClientRect();
+        const clientX=Number(point.clientX);
+        const clientY=Number(point.clientY);
+        if(!Number.isFinite(clientX) || !Number.isFinite(clientY) || !rect.width || !rect.height) return null;
+        return {
+          x:clamp((clientX-rect.left)/rect.width),
+          y:clamp((clientY-rect.top)/rect.height)
+        };
+      }
+      function bindPointerDrag($element,onMove){
+        const element=$element[0];
+        let dragging=false;
+        let activePointerId=null;
+
+        function handleMove(event){
+          if(!dragging) return;
+          if(activePointerId !== null && event.pointerId !== undefined && event.pointerId !== activePointerId) return;
+          event.preventDefault();
+          onMove(event);
+        }
+
+        function stopDrag(event){
+          if(activePointerId !== null && event && event.pointerId !== undefined && event.pointerId !== activePointerId) return;
+          dragging=false;
+          try {
+            if(activePointerId !== null && element.hasPointerCapture?.(activePointerId)) {
+              element.releasePointerCapture(activePointerId);
+            }
+          } catch (_) {}
+          activePointerId=null;
+          window.removeEventListener('pointermove', handleMove, true);
+          window.removeEventListener('pointerup', stopDrag, true);
+          window.removeEventListener('pointercancel', stopDrag, true);
+        }
+
+        $element.on('pointerdown',function(event){
+          event.preventDefault();
+          event.stopPropagation();
+          dragging=true;
+          activePointerId=event.pointerId ?? null;
+          try {
+            if(activePointerId !== null) element.setPointerCapture?.(activePointerId);
+          } catch (_) {}
+          onMove(event);
+          window.addEventListener('pointermove', handleMove, true);
+          window.addEventListener('pointerup', stopDrag, true);
+          window.addEventListener('pointercancel', stopDrag, true);
+        });
+      }
+      bindPointerDrag(spectrum,event=>{
+        const pos=pointerPosition(event,spectrum[0]);
+        if(!pos) return;
+        const index=state.activeStop;
+        const hsv={
+          h:state.editorHue[index] || 0,
+          s:pos.x,
+          v:1-pos.y
+        };
+        setColor(rgbObjectToHex(hsvToRgbLocal(hsv.h,hsv.s,hsv.v)),'user',hsv);
+      });
+      bindPointerDrag(saturationSlider,event=>{
+        const pos=pointerPosition(event,saturationSlider[0]);
+        if(!pos) return;
+        const index=state.activeStop;
+        const hsv={
+          h:state.editorHue[index] || 0,
+          s:1-pos.y,
+          v:state.editorBrightness[index]
+        };
+        setColor(rgbObjectToHex(hsvToRgbLocal(hsv.h,hsv.s,hsv.v)),'user',hsv);
+      });
+      bindPointerDrag(brightnessSlider,event=>{
+        const pos=pointerPosition(event,brightnessSlider[0]);
+        if(!pos) return;
+        const index=state.activeStop;
+        const hsv={
+          h:state.editorHue[index] || 0,
+          s:state.editorSaturation[index],
+          v:1-pos.y
+        };
+        setColor(rgbObjectToHex(hsvToRgbLocal(hsv.h,hsv.s,hsv.v)),'user',hsv);
+      });
+      bindPointerDrag(hueSlider,event=>{
+        const pos=pointerPosition(event,hueSlider[0]);
+        if(!pos) return;
+        const index=state.activeStop;
+        const hsv={
+          h:Math.min(359.999,pos.x*360),
+          s:state.editorSaturation[index],
+          v:state.editorBrightness[index]
+        };
+        setColor(rgbObjectToHex(hsvToRgbLocal(hsv.h,hsv.s,hsv.v)),'user',hsv);
+      });
+
+      display.attr('tabindex','0').on('click keydown', e => {
+        if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        if (e.type === 'keydown') e.preventDefault();
         e.stopPropagation();
         $('.color-picker-dropdown').not(picker).removeClass('show');
         picker.toggleClass('show');
         if (!picker.hasClass('show')) return;
+        requestAnimationFrame(positionPicker);
+      });
 
-        picker.css('transform', '');
-        const naturalW = picker.outerWidth();
-        const naturalH = picker.outerHeight();
-        const availW = window.innerWidth  - 8;
-        const availH = window.innerHeight - 8;
-        const scale  = Math.min(1, availW/naturalW, availH/naturalH);
+      $(window).on('resize scroll', positionPicker);
 
-        picker.css({
-          transform:        `scale(${scale})`,
-          transformOrigin:  'top left'
+      if (allowGradient) {
+        picker.on('click', '.paint-mode-btn', function(e){
+          e.stopPropagation();
+          setMode($(this).data('paint-mode'), 'user');
+          requestAnimationFrame(positionPicker);
         });
+        picker.on('input', '.gradient-angle-input', function(){
+          state.angle=Math.max(0, Math.min(360, Number(this.value) || 0));
+          updateUi('user', true);
+        });
+      }
 
-        const effW = naturalW * scale;
-        const effH = naturalH * scale;
-        const rect = display[0].getBoundingClientRect();
-        let top  = rect.bottom + 4;
-        if (top + effH > window.innerHeight) top = rect.top - effH - 4;
-        top = Math.max(0, Math.min(top, window.innerHeight - effH));
-
-        let left = rect.left;
-        left = Math.max(4, Math.min(left, window.innerWidth - effW - 4));
-        picker.css({ top: `${top}px`, left: `${left}px` });
+      colorStopInputs.on('click focusin', '.color-stop-input, .active-color-chip, .color-input', function(e){
+        e.stopPropagation();
+        const group=$(this).closest('.color-stop-input');
+        state.activeStop=Number(group.data('gradient-stop')) || 0;
+        updateUi('user', false);
       });
 
-      input.on('input', e => {
-        const v = e.target.value;
-        if(/^#[0-9A-Fa-f]{6}$/.test(v)) setColor(v, 'user');
+      colorInputs.forEach((field,index)=>{
+        field.on('input', e => {
+          const v=e.target.value;
+          if(/^#[0-9A-Fa-f]{6}$/.test(v)) {
+            state.activeStop=index;
+            setColor(v,'user');
+          }
+        });
       });
-      native.on('input', e => setColor(e.target.value, 'user'));
-      setColor(display.attr('data-color'), 'init');
+      updateUi('init', false);
 
-      const api={setColor,setSuggestedColors};
+      const api={setColor,setSuggestedColors,getPaint,setPaint,setMode};
       allColorPickers.push(api);
       setSuggestedColors(currentSuggestedColors);
       return api;
@@ -1264,54 +2070,37 @@
         const picker = item.data('colorPicker');
         if (!picker) return;
         if (item.find('.frame-match-fore').prop('checked')) {
-          picker.setColor($('#fgColorDisplay').data('color'));
+          picker.setPaint(fgColorPicker.getPaint(), 'match');
         } else if (item.find('.frame-match-back').prop('checked')) {
-          picker.setColor($('#bgColorDisplay').data('color'));
+          picker.setPaint(bgColorPicker.getPaint(), 'match');
         }
       });
     }
 
     function syncMatchedTemplateColors() {
-      let changed = false;
       if (templateTextColorPicker && $('#templateTextMatchFg').prop('checked')) {
-        templateTextColorPicker.setColor($('#fgColorDisplay').data('color'));
-        changed = true;
+        templateTextColorPicker.setPaint(fgColorPicker.getPaint(), 'match');
+        scheduleFrame();
       }
-      if (templateBgColorPicker && $('#templateBackMatchBg').prop('checked')) {
-        templateBgColorPicker.setColor($('#bgColorDisplay').data('color'));
-        changed = true;
-      }
-      if (changed) scheduleFrame();
     }
 
-    const fgColorPicker=initColorPicker('fgColorDisplay','fgColorPicker','fgColorPalette','fgColorInput','fgColorNative',()=>{syncMatchedTemplateColors();syncMatchedFrameColors();scheduleQR();});
-    const bgColorPicker=initColorPicker('bgColorDisplay','bgColorPicker','bgColorPalette','bgColorInput','bgColorNative',()=>{syncMatchedTemplateColors();syncMatchedFrameColors();scheduleQR();});
-    templateTextColorPicker=initColorPicker('templateColorDisplay','templateColorPicker','templateColorPalette','templateColorInput','templateColorNative',()=>scheduleFrame());
-    templateBgColorPicker=initColorPicker('templateBgColorDisplay','templateBgColorPicker','templateBgColorPalette','templateBgColorInput','templateBgColorNative',()=>scheduleFrame());
+    const fgColorPicker=initColorPicker('fgColorDisplay','fgColorPicker','fgColorPalette','fgColorInput',null,()=>{syncMatchedTemplateColors();syncMatchedFrameColors();scheduleQR();},{allowGradient:true,secondColor:'#0d6efd',angle:90});
+    const bgColorPicker=initColorPicker('bgColorDisplay','bgColorPicker','bgColorPalette','bgColorInput',null,()=>{syncMatchedFrameColors();scheduleQR();},{allowGradient:true,secondColor:'#334155',angle:90});
+    templateTextColorPicker=initColorPicker('templateColorDisplay','templateColorPicker','templateColorPalette','templateColorInput',null,()=>scheduleFrame(),{allowGradient:true,secondColor:'#0d6efd',angle:90});
 
     $('#swapQrColors').on('click', function() {
-      const foreground = $('#fgColorDisplay').data('color');
-      const background = $('#bgColorDisplay').data('color');
-      fgColorPicker.setColor(background);
-      bgColorPicker.setColor(foreground);
-    });
-
-    $('#swapTemplateColors').on('click', function() {
-      const textColor = $('#templateColorDisplay').data('color');
-      const backColor = $('#templateBgColorDisplay').data('color');
-      $('#templateTextMatchFg, #templateBackMatchBg').prop('checked', false);
-      templateTextColorPicker.setColor(backColor);
-      templateBgColorPicker.setColor(textColor);
-      scheduleFrame();
+      const foreground = fgColorPicker.getPaint();
+      const background = bgColorPicker.getPaint();
+      fgColorPicker.setPaint(background, 'user');
+      bgColorPicker.setPaint(foreground, 'user');
     });
 
     $('#templateTextMatchFg').on('change',function(){
-      if(this.checked) templateTextColorPicker.setColor($('#fgColorDisplay').data('color'));
+      if(this.checked) templateTextColorPicker.setPaint(fgColorPicker.getPaint(), 'match');
       scheduleFrame();
     });
-    $('#templateBackMatchBg').on('change',function(){
-      if(this.checked) templateBgColorPicker.setColor($('#bgColorDisplay').data('color'));
-      scheduleFrame();
+    $('#templateEnabled').on('change', function() {
+      scheduleQR();
     });
 
     $(document).on('click',e=>{
@@ -1333,16 +2122,15 @@
     function createFrameColorPicker(container,initialColor,onChange){
       const id = 'frame' + Date.now() + Math.floor(Math.random()*1e6);
       container.innerHTML=`
-        <div class="color-picker-container flex-grow-1">
-          <div class="color-display" data-color="${initialColor}" style="--color-value:${initialColor};height:30px" id="${id}D"></div>
+        <div class="color-picker-container qr-paint-picker compact-paint-picker flex-grow-1">
+          <div class="color-display" data-color="${initialColor}" style="--color-value:${initialColor}" id="${id}D"></div>
           <div class="color-picker-dropdown" id="${id}P">
             <div class="color-palette" id="${id}Pal"></div>
             <div class="color-input-group">
               <input type="text" class="color-input" id="${id}I" value="${initialColor}" pattern="^#[0-9A-Fa-f]{6}$">
-              <input type="color" class="native-color-input" id="${id}N" value="${initialColor}">
             </div>
           </div>`;
-      const picker=initColorPicker(`${id}D`,`${id}P`,`${id}Pal`,`${id}I`,`${id}N`,onChange);
+      const picker=initColorPicker(`${id}D`,`${id}P`,`${id}Pal`,`${id}I`,null,onChange,{allowGradient:true,secondColor:initialColor === '#000000' ? '#334155' : '#ffffff',angle:90});
       frameColorPickers.push(picker);
       return picker;
     }
@@ -1519,14 +2307,14 @@
       item.find('.frame-match-fore').on('change', function() {
         if (this.checked) {
           item.find('.frame-match-back').prop('checked', false);
-          framePicker.setColor($('#fgColorDisplay').data('color'));
+          framePicker.setPaint(fgColorPicker.getPaint(), 'match');
         }
         scheduleFrame();
       });
       item.find('.frame-match-back').on('change', function() {
         if (this.checked) {
           item.find('.frame-match-fore').prop('checked', false);
-          framePicker.setColor($('#bgColorDisplay').data('color'));
+          framePicker.setPaint(bgColorPicker.getPaint(), 'match');
         }
         scheduleFrame();
       });
@@ -1572,21 +2360,29 @@
 
       // User frames remain in their visible order, from nearest the QR outward.
       $('#framesContainer .frame-item').each(function() {
-        const color = $(this).find('.color-display').data('color');
+        const picker = $(this).data('colorPicker');
+        const paint = picker ? picker.getPaint() : {
+          type: 'solid',
+          color1: $(this).find('.color-display').data('color') || '#000000',
+          color2: $(this).find('.color-display').data('color') || '#000000',
+          angle: 90
+        };
         const thick = Math.min(100,
           parseInt($(this).find('.frame-thickness-input').val(), 10) || 0
         );
-        if (thick > 0) frames.push({ color, thickness: thick });
+        if (thick > 0) frames.push({ paint, thickness: thick });
       });
 
-      // Hidden outer corner fill is only used when template text is enabled.
-      // It stays outside every user frame and matches the template background color
-      // so the rounded QR/frame system blends cleanly into the template block.
-      const templateOptions = getTemplateOptions();
-      if (templateOptions) {
+      // When template text is active, add the hidden outer template frame back.
+      // It sits outside every user frame, matches the main Background exactly,
+      // and fills the outer square corners as part of the template system.
+      // Because it is outside the visible frames and the QR interior is cleared
+      // before the QR is drawn, it does not alter user frame colors or the QR
+      // background itself.
+      if (getTemplateOptions()) {
         frames.push({
-          color: templateOptions.bg,
-          thickness: 36,
+          paint: bgColorPicker.getPaint(),
+          thickness: 18,
           outerFill: true
         });
       }
@@ -2383,23 +3179,48 @@
       ctx.fill();
     }
 
-    function drawQRToCanvas(qr, logoInfo) {
+    function createCanvasPaint(ctx, paint, width, height, offsetX = 0, offsetY = 0) {
+      if (!paint || paint.type !== 'gradient') return (paint && paint.color1) || '#000000';
+
+      const angle=((Number(paint.angle) || 0) - 90) * Math.PI / 180;
+      const cos=Math.cos(angle);
+      const sin=Math.sin(angle);
+      const halfLength=(Math.abs(width * cos) + Math.abs(height * sin)) / 2;
+      const centerX=offsetX + width / 2;
+      const centerY=offsetY + height / 2;
+      const gradient=ctx.createLinearGradient(
+        centerX - cos * halfLength,
+        centerY - sin * halfLength,
+        centerX + cos * halfLength,
+        centerY + sin * halfLength
+      );
+      gradient.addColorStop(0, paint.color1 || '#000000');
+      gradient.addColorStop(1, paint.color2 || paint.color1 || '#000000');
+      return gradient;
+    }
+
+    function drawQRToCanvas(qr, logoInfo, options = {}) {
       const qrModel = getQRModel(qr);
       const moduleCount = qrModel ? qrModel.getModuleCount() : 41;
       const canvas = document.createElement('canvas');
       canvas.width = SIZE;
       canvas.height = SIZE;
       const ctx = canvas.getContext('2d');
-      const bgColor = $('#bgColorDisplay').data('color');
-      const fgColor = $('#fgColorDisplay').data('color');
+      const bgPaint = bgColorPicker.getPaint();
+      const fgPaint = fgColorPicker.getPaint();
       const dotStyle = qrStyle || 'rounded';
       const layout = getQRLayout(moduleCount, SIZE);
       const moduleSize = layout.moduleSize;
       const reserved = getLogoReservedArea(logoInfo, moduleCount, SIZE);
+      const useTransparentBackground = !!options.useTransparentBackground;
 
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, SIZE, SIZE);
-      ctx.fillStyle = fgColor;
+      if (!useTransparentBackground) {
+        ctx.fillStyle = createCanvasPaint(ctx, bgPaint, SIZE, SIZE);
+        ctx.fillRect(0, 0, SIZE, SIZE);
+      } else {
+        ctx.clearRect(0, 0, SIZE, SIZE);
+      }
+      ctx.fillStyle = createCanvasPaint(ctx, fgPaint, SIZE, SIZE);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
@@ -2474,15 +3295,20 @@
 
         const qr=new QRCodeStyling({
           width:SIZE,height:SIZE,margin:QR_MARGIN,data:txt,
-          dotsOptions:{ type: qrStyle, color: $('#fgColorDisplay').data('color') },
-          backgroundOptions:{ color: $('#bgColorDisplay').data('color') },
+          dotsOptions:{ type: qrStyle, color: fgColorPicker.getPaint().color1 },
+          backgroundOptions:{ color: bgColorPicker.getPaint().color1 },
           qrOptions:{errorCorrectionLevel:errorCorrectionLevel}
         });
 
-        baseCanvas = drawQRToCanvas(qr, logoInfo);
+        const hasUnifiedTemplateBackground = !!getTemplateOptions();
+        baseCanvas = drawQRToCanvas(qr, logoInfo, {
+          useTransparentBackground: hasUnifiedTemplateBackground
+        });
         scheduleFrame();
       } catch (error) {
         baseCanvas = null;
+        finalCanvas = null;
+        $('#downloadQrBtn').prop('disabled', true);
         $('#qrcode').empty().append(
           $('<div>').addClass('text-danger small p-3 text-center').text(error && error.message ? error.message : 'Unable to generate this QR code.')
         );
@@ -2501,8 +3327,8 @@
         weight: $('#templateWeight').val(),
         size: Math.max(12, Number($('#templateFontSize').val()) || 48),
         gap: Math.max(0, Number($('#templateGap').val()) || 0),
-        color: $('#templateColorDisplay').data('color') || '#ffffff',
-        bg: $('#templateBgColorDisplay').data('color') || $('#bgColorDisplay').data('color') || '#000000'
+        colorPaint: templateTextColorPicker ? templateTextColorPicker.getPaint() : {type:'solid',color1:'#ffffff',color2:'#ffffff',angle:90},
+        bgPaint: bgColorPicker.getPaint()
       };
     }
 
@@ -2557,14 +3383,14 @@
       out.height = isVertical ? canvas.height : canvas.height + strip;
 
       const ctx = out.getContext('2d');
-      ctx.fillStyle = scaledOpt.bg;
+      ctx.fillStyle = createCanvasPaint(ctx, scaledOpt.bgPaint, out.width, out.height);
       ctx.fillRect(0, 0, out.width, out.height);
 
       const qrX = scaledOpt.side === 'left' ? strip : 0;
       const qrY = scaledOpt.side === 'top' ? strip : 0;
       ctx.drawImage(canvas, qrX, qrY);
 
-      ctx.fillStyle = scaledOpt.color;
+      ctx.fillStyle = createCanvasPaint(ctx, scaledOpt.colorPaint, out.width, out.height);
       ctx.font = `${scaledOpt.weight} ${fittedSize}px ${scaledOpt.font}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -2587,7 +3413,7 @@
     function applyFrames(){
       if(!baseCanvas)return;
       const frames=getFrames().map(f => ({
-        color: f.color,
+        paint: f.paint || {type:'solid',color1:f.color || '#000000',color2:f.color || '#000000',angle:90},
         thickness: f.thickness * CANVAS_SCALE,
         outerFill: !!f.outerFill
       }));
@@ -2610,7 +3436,7 @@
           const f=frames[i],side=size-2*off;
           const distanceFromQr=border-off;
           const radius=Math.min(QR_CORNER_RADIUS+distanceFromQr,side/2);
-          ctx.fillStyle=f.color;
+          ctx.fillStyle=createCanvasPaint(ctx, f.paint, side, side, off, off);
           if (f.outerFill) {
             ctx.fillRect(off, off, side, side);
           } else {
@@ -2620,14 +3446,30 @@
           }
           off+=f.thickness;
         }
+        const innerRadius = Math.min(QR_CORNER_RADIUS, base / 2);
+
+        // Remove every frame layer from beneath the QR itself before drawing
+        // the QR canvas. This is required when Template is enabled because the
+        // QR canvas intentionally has a transparent background so the one main
+        // Background paint can continue across both the QR and text areas.
+        // Without clearing this area, the innermost frame color shows through
+        // that transparency and incorrectly becomes the QR background.
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.roundRect(border, border, base, base, innerRadius);
+        ctx.fill();
+        ctx.restore();
+
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(border,border,base,base,Math.min(QR_CORNER_RADIUS,base/2));
+        ctx.roundRect(border, border, base, base, innerRadius);
         ctx.clip();
-        ctx.drawImage(baseCanvas,border,border);
+        ctx.drawImage(baseCanvas, border, border);
         ctx.restore();
       }
       canvas = drawTemplate(canvas);
+      finalCanvas = canvas;
       $('#qrcode').empty().append(canvas);
       $('#downloadQrBtn').prop('disabled', false);
     }
@@ -2646,30 +3488,32 @@
     });
 
     $('#downloadQrBtn').on('click', function() {
-      const canvas = $('#qrcode canvas')[0];
+      const canvas = finalCanvas || $('#qrcode canvas')[0];
       if (!canvas) return;
 
-      const triggerDownload = blob => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'qr-code.png';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      };
-
-      if (canvas.toBlob) {
-        canvas.toBlob(triggerDownload, 'image/png');
-      } else {
+      try {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         link.download = 'qr-code.png';
+        link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         link.remove();
+      } catch (error) {
+        // Fallback for browsers that cannot create a data URL for this canvas.
+        if (!canvas.toBlob) return;
+        canvas.toBlob(blob => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'qr-code.png';
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, 'image/png');
       }
     });
 
