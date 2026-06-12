@@ -149,7 +149,7 @@
       height: 20px;
       margin-top: -6px;
       transition: transform .12s ease, box-shadow .12s ease;
-      width: 20px;
+      width: 16px;
     }
     .range-modern:active::-webkit-slider-thumb {
       box-shadow: 0 3px 10px rgba(13, 110, 253, .42);
@@ -199,16 +199,25 @@
       font-weight: 600;
     }
     .image-size-control {
-      font-size: 13px;
+      align-items: center;
+      display: grid !important;
+      font-size: 12px;
+      gap: 6px !important;
+      grid-template-columns: 78px minmax(58px, 1fr) 40px 19px;
+      min-width: 0;
+      white-space: nowrap;
     }
     .image-size-control + .image-size-control {
       margin-top: 2px;
     }
     .image-control-label {
-      flex: 0 0 86px;
-      min-width: 86px;
+      flex: none;
+      font-size: 12px;
+      min-width: 0;
+      white-space: nowrap;
     }
     .image-size-control input[type="range"] {
+      min-width: 0;
       width: 100%;
     }
     .image-adjustment-note {
@@ -266,10 +275,54 @@
       margin-top: 2px;
     }
     .image-size-value {
-      min-width: 42px;
-      text-align: right;
-      font-weight: 600;
       color: #495057;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .logo-adjustment-controls {
+      margin-top: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translateY(-4px);
+      transition: max-height .26s ease, opacity .18s ease, transform .22s ease, margin-top .22s ease, visibility 0s linear .26s;
+      visibility: hidden;
+    }
+    .logo-adjustment-controls.is-visible {
+      margin-top: 4px;
+      max-height: 74px;
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0s;
+      visibility: visible;
+    }
+    .padding-safety-indicator {
+      color: #dc3545;
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      min-width: 19px;
+      opacity: 0;
+      text-transform: uppercase;
+      transform: scale(.82);
+      transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+      visibility: hidden;
+    }
+    .padding-safety-indicator.is-visible {
+      opacity: .78;
+      transform: scale(1);
+      visibility: visible;
+    }
+    .padding-safety-indicator.flash {
+      animation: paddingSafetyFlash .38s ease;
+    }
+    @keyframes paddingSafetyFlash {
+      0%, 100% { opacity: .78; transform: scale(1); }
+      45% { opacity: 1; transform: scale(1.16); }
     }
 
     .font-native-select,
@@ -463,7 +516,13 @@
       border-radius: 6px;
     }
     .template-color-line {
-      display: block;
+      align-items: center;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+    .template-color-line > .form-label {
+      white-space: nowrap;
     }
     .template-color-line .template-color-picker {
       min-width: 0;
@@ -476,7 +535,7 @@
       font-size: 11px;
       gap: 4px;
       line-height: 1;
-      margin: 0 0 5px;
+      margin: 0;
       white-space: nowrap;
     }
     .template-color-match input {
@@ -525,6 +584,25 @@
     }
     .frame-item {
       padding: 0 !important;
+    }
+    .frame-item.ui-enter-expand {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translateY(-6px) scale(.985);
+      transition: max-height .26s ease, opacity .18s ease, transform .22s ease;
+    }
+    .frame-item.ui-enter-expand.is-visible {
+      max-height: var(--ui-enter-height, 80px);
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .logo-container.ui-enter-pop {
+      animation: uiEnterPop .22s ease both;
+    }
+    @keyframes uiEnterPop {
+      from { opacity: 0; transform: translateY(-4px) scale(.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .remove-frame-btn {
       right: 2px !important;
@@ -596,6 +674,59 @@
       height: 12px;
       margin: 0;
       width: 12px;
+    }
+
+    .borders-header-row {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .borders-header-row .template-control-title {
+      margin: 0;
+    }
+    .border-global-glow {
+      align-items: center;
+      display: flex;
+      gap: 7px;
+      min-width: 0;
+    }
+    .border-global-glow-label {
+      align-items: center;
+      color: #6c757d;
+      display: inline-flex;
+      font-size: 10px;
+      font-weight: 700;
+      gap: 4px;
+      line-height: 1;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .border-global-glow-label input {
+      height: 13px;
+      margin: 0;
+      width: 13px;
+    }
+    .border-global-glow-picker {
+      transition: opacity .18s ease, filter .18s ease;
+      width: 42px;
+    }
+    .border-global-glow-picker.is-disabled {
+      filter: grayscale(.25);
+      opacity: .45;
+      pointer-events: none;
+    }
+    .border-global-glow-picker .color-picker-container {
+      margin: 0;
+      width: 42px;
+    }
+    .border-global-glow-picker .color-display {
+      border-radius: 8px;
+      height: 28px;
+      margin: 0;
+      min-height: 28px;
+      width: 42px;
     }
     #framesContainer {
       max-height: none;
@@ -738,6 +869,9 @@
       #mobileAdvancedHost #advancedSection {
         margin-bottom: 0 !important;
       }
+      .border-template-column {
+        margin-top: 0 !important;
+      }
       .range-modern {
         touch-action: pan-y;
       }
@@ -848,6 +982,11 @@
     }
     .color-picker-dropdown {
       background: rgba(255,255,255,.98);
+      display: block !important;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .14s ease, visibility .14s ease;
+      visibility: hidden;
       border: 1px solid #dbe3ee;
       border-radius: 13px;
       box-shadow: 0 14px 42px rgba(15,23,42,.18);
@@ -857,9 +996,14 @@
       overflow-x: hidden;
       overflow-y: auto;
       overscroll-behavior: contain;
-      padding: 9px;
+      padding: 7px;
       scrollbar-gutter: stable;
-      width: min(304px, calc(100vw - 12px));
+      width: min(270px, calc(100vw - 12px));
+    }
+    .color-picker-dropdown.show {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
     }
     .paint-mode-switch {
       background: #eef2f7;
@@ -887,26 +1031,46 @@
       color: #0f172a;
     }
     .gradient-controls {
-      display: none;
-      margin-bottom: 7px;
+      margin-bottom: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translateY(-3px);
+      transition: max-height .2s ease, opacity .15s ease, transform .18s ease, margin-bottom .18s ease, visibility 0s linear .2s;
+      visibility: hidden;
     }
     .gradient-controls.show {
-      display: block;
+      margin-bottom: 7px;
+      max-height: 150px;
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0s;
+      visibility: visible;
     }
     .color-stop-inputs {
       display: grid;
       gap: 3px;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0fr);
       margin-bottom: 7px;
+      transition: grid-template-columns .2s ease;
     }
     .color-stop-inputs.gradient-active {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
     .color-stop-input[data-gradient-stop="1"] {
-      display: none;
+      min-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transform: scale(.96);
+      transition: opacity .15s ease, transform .18s ease, visibility .18s ease;
+      visibility: hidden;
     }
     .color-stop-inputs.gradient-active .color-stop-input[data-gradient-stop="1"] {
-      display: grid;
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+      visibility: visible;
     }
     .color-stop-input.active {
       border-color: #3b82f6;
@@ -920,8 +1084,8 @@
     .gradient-angle-row {
       align-items: center;
       display: grid;
-      gap: 6px;
-      grid-template-columns: auto minmax(0,1fr) 42px;
+      gap: 5px;
+      grid-template-columns: auto minmax(0,1fr) 42px 26px;
     }
     .gradient-angle-row label {
       color: #64748b;
@@ -930,7 +1094,7 @@
       margin: 0;
     }
     .gradient-angle-input {
-      height: 20px;
+      height: 16px;
       min-width: 0;
     }
     .gradient-angle-value {
@@ -943,14 +1107,70 @@
       padding: 2px 6px;
       text-align: center;
     }
+    .gradient-flip-btn {
+      align-items: center;
+      background: #fff;
+      border: 1px solid #dbe3ee;
+      border-radius: 7px;
+      color: #475569;
+      display: inline-flex;
+      height: 24px;
+      justify-content: center;
+      padding: 0;
+      transition: border-color .15s ease, box-shadow .15s ease, color .15s ease, transform .15s ease;
+      width: 26px;
+    }
+    .gradient-flip-btn:hover,
+    .gradient-flip-btn:focus-visible {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,.12);
+      color: #2563eb;
+      outline: 0;
+    }
+    .gradient-flip-btn:active {
+      transform: scale(.92);
+    }
+    .gradient-flip-btn svg {
+      height: 14px;
+      width: 14px;
+    }
+    .gradient-samples {
+      display: grid;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .gradient-sample-row {
+      display: grid;
+      gap: 4px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .gradient-sample {
+      background: var(--gradient-sample);
+      border: 1px solid rgba(15,23,42,.14);
+      border-radius: 7px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+      cursor: pointer;
+      height: 19px;
+      min-width: 0;
+      padding: 0;
+      transition: border-color .14s ease, box-shadow .14s ease, transform .12s ease;
+    }
+    .gradient-sample:hover,
+    .gradient-sample:focus-visible {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,.12);
+      outline: 0;
+      transform: translateY(-1px);
+    }
+    .gradient-sample.active {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(37,99,235,.55);
+    }
     .color-palette {
       display: block;
       margin-bottom: 6px;
-      max-height: 168px;
-      overflow-x: hidden;
-      overflow-y: auto;
-      padding: 1px 2px 3px;
-      scrollbar-gutter: stable;
+      overflow: visible;
+      padding: 1px 0 2px;
     }
     .palette-section-label {
       color: #64748b;
@@ -961,16 +1181,28 @@
       text-transform: uppercase;
     }
     .palette-suggested-section {
-      margin-bottom: 5px;
+      margin-bottom: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translateY(-3px);
+      transition: max-height .22s ease, opacity .16s ease, transform .18s ease, margin-bottom .18s ease, visibility 0s linear .22s;
+      visibility: hidden;
     }
-    .palette-suggested-section[hidden] {
-      display: none;
+    .palette-suggested-section.is-visible {
+      margin-bottom: 5px;
+      max-height: 52px;
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0s;
+      visibility: visible;
     }
     .palette-image-grid,
     .palette-family-row {
       display: grid;
       gap: 3px;
-      grid-template-columns: repeat(10, minmax(0, 1fr));
+      grid-template-columns: repeat(10, 16px);
+      justify-content: space-between;
     }
     .palette-family-grid {
       display: grid;
@@ -980,15 +1212,82 @@
       border-radius: 8px;
       position: relative;
     }
+    .color-editor-accordion {
+      display: grid;
+      gap: 4px;
+    }
+    .color-editor-section {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+    .color-editor-section.open {
+      background: #fff;
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 8px rgba(15,23,42,.05);
+    }
+    .color-editor-toggle {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      color: #64748b;
+      display: flex;
+      font-size: 10px;
+      font-weight: 800;
+      justify-content: space-between;
+      letter-spacing: .04em;
+      padding: 7px 8px;
+      text-align: left;
+      text-transform: uppercase;
+      width: 100%;
+    }
+    .color-editor-toggle:focus-visible {
+      box-shadow: inset 0 0 0 2px rgba(59,130,246,.18);
+      outline: 0;
+    }
+    .color-editor-chevron {
+      font-size: 9px;
+      transition: transform .2s ease;
+    }
+    .color-editor-section.open .color-editor-chevron {
+      transform: rotate(180deg);
+    }
+    .color-editor-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transform: translateY(-3px);
+      transition: grid-template-rows .22s ease, opacity .16s ease, transform .18s ease;
+    }
+    .color-editor-section.open .color-editor-panel {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .color-editor-panel-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+    .color-shades-inner {
+      max-height: 146px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 1px 7px 7px;
+      scrollbar-gutter: stable;
+    }
+    .custom-color-editor-host {
+      padding: 0 7px 7px;
+    }
     .color-swatch {
-      aspect-ratio: 1 / 1;
       border: 1px solid rgba(15,23,42,.13);
       border-radius: 5px;
       cursor: pointer;
-      height: auto;
+      height: 16px;
       min-width: 0;
       transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-      width: 100%;
+      width: 16px;
     }
     .color-swatch:hover {
       border-color: rgba(59,130,246,.72);
@@ -1008,7 +1307,7 @@
       border-radius: 9px;
       display: grid;
       gap: 5px;
-      grid-template-columns: 24px minmax(0,1fr);
+      grid-template-columns: 21px minmax(0,1fr);
       padding: 3px;
       transition: border-color .14s ease, box-shadow .14s ease;
     }
@@ -1017,9 +1316,9 @@
       border-radius: 6px;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
       cursor: pointer;
-      height: 24px;
+      height: 21px;
       padding: 0;
-      width: 24px;
+      width: 21px;
     }
     .color-input {
       background: transparent;
@@ -1039,9 +1338,9 @@
       outline: 0;
     }
     .custom-color-editor {
-      border-top: 1px solid #e8edf4;
-      margin-top: 6px;
-      padding-top: 6px;
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 2px;
     }
     .custom-color-editor-title {
       align-items: center;
@@ -1058,7 +1357,7 @@
       align-items: end;
       display: grid;
       gap: 6px;
-      grid-template-columns: 28px minmax(0,1fr) 36px;
+      grid-template-columns: 24px minmax(0,1fr) 30px;
     }
     .custom-axis-wrap {
       align-items: center;
@@ -1081,7 +1380,7 @@
       border-radius: 999px;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
       cursor: ns-resize;
-      height: 84px;
+      height: 76px;
       position: relative;
       touch-action: none;
       width: 14px;
@@ -1108,7 +1407,7 @@
       border-radius: 12px;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
       cursor: crosshair;
-      height: 84px;
+      height: 76px;
       overflow: hidden;
       position: relative;
       touch-action: none;
@@ -1162,6 +1461,37 @@
       transform: translate(-50%, -50%);
       width: 8px;
     }
+    .style-heart .dot-shape {
+      clip-path: polygon(50% 92%, 10% 52%, 10% 26%, 26% 10%, 50% 24%, 74% 10%, 90% 26%, 90% 52%);
+      border-radius: 2px;
+    }
+
+    .template-select-row {
+      align-items: end;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 78px 96px minmax(0, 1fr);
+      margin-bottom: 8px;
+    }
+    .template-select-field {
+      min-width: 0;
+    }
+    .template-select-field .form-label {
+      display: block;
+      margin-bottom: 3px;
+    }
+    .template-select-field .uniform-select,
+    .template-select-field .font-preview-picker,
+    .template-select-field .font-preview-button {
+      min-width: 0;
+      width: 100%;
+    }
+    .template-select-field .font-preview-button-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     @media (max-width: 575.98px) {
       .color-pair-grid {
         gap: 7px;
@@ -1176,13 +1506,47 @@
       }
       .palette-image-grid,
       .palette-family-row {
-        gap: 4px;
-        grid-template-columns: repeat(10, minmax(0,1fr));
+        gap: 3px;
+        grid-template-columns: repeat(10, 16px);
+        justify-content: space-between;
+      }
+      .color-swatch {
+        height: 16px;
+        width: 16px;
       }
       .custom-color-spectrum,
       .custom-saturation-slider,
       .custom-brightness-slider {
         height: 104px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .image-size-control {
+        gap: 5px !important;
+        grid-template-columns: 76px minmax(48px, 1fr) 38px 18px;
+      }
+      .image-control-label,
+      .image-size-value {
+        font-size: 11px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .logo-adjustment-controls,
+      .padding-safety-indicator,
+      .color-picker-dropdown,
+      .gradient-controls,
+      .gradient-sample,
+      .color-editor-section,
+      .color-editor-panel,
+      .color-editor-chevron,
+      .color-stop-inputs,
+      .color-stop-input,
+      .palette-suggested-section,
+      .frame-item.ui-enter-expand,
+      .logo-container.ui-enter-pop {
+        animation: none !important;
+        transition: none !important;
       }
     }
 
@@ -1206,15 +1570,18 @@
               <div>+</div><div>Add Image</div>
             </div>
           </div>
-          <div class="image-size-control d-flex align-items-center gap-2">
-            <label for="logoSizeDial" class="form-label mb-0 text-secondary image-control-label">Image size</label>
-            <input type="range" id="logoSizeDial" class="form-range range-modern flex-grow-1" min="15" max="45" step="1" value="25">
-            <span id="logoSizeValue" class="image-size-value">25%</span>
-          </div>
-          <div class="image-size-control d-flex align-items-center gap-2">
-            <label for="logoPaddingDial" class="form-label mb-0 text-secondary image-control-label">Image padding</label>
-            <input type="range" id="logoPaddingDial" class="form-range range-modern flex-grow-1" min="0" max="6" data-base-max="6" step="1" value="0">
-            <span id="logoPaddingValue" class="image-size-value">0 dots</span>
+          <div id="logoAdjustmentControls" class="logo-adjustment-controls" aria-hidden="true">
+            <div class="image-size-control d-flex align-items-center gap-2">
+              <label for="logoSizeDial" class="form-label mb-0 text-secondary image-control-label">Image size</label>
+              <input type="range" id="logoSizeDial" class="form-range range-modern flex-grow-1" min="15" max="45" step="0.1" value="25" disabled>
+              <span id="logoSizeValue" class="image-size-value">25%</span>
+            </div>
+            <div class="image-size-control d-flex align-items-center gap-2">
+              <label for="logoPaddingDial" class="form-label mb-0 text-secondary image-control-label">Image padding</label>
+              <input type="range" id="logoPaddingDial" class="form-range range-modern flex-grow-1" min="0" max="6" data-base-max="6" step="1" value="0" disabled>
+              <span id="logoPaddingValue" class="image-size-value">0 dots</span>
+              <span id="logoPaddingSafety" class="padding-safety-indicator" title="Safety limit reached" aria-hidden="true">max</span>
+            </div>
           </div>
         </div>
 
@@ -1276,11 +1643,29 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-4">
+      <div class="col-12 col-lg-4 border-template-column">
         <div id="framesSection" class="template-control-card mb-3 p-2 border rounded bg-light">
-          <div class="template-control-title mb-2">Frames</div>
+          <div class="borders-header-row">
+            <div class="template-control-title">Borders</div>
+            <div class="border-global-glow">
+              <label class="border-global-glow-label" for="outerGlowEnabled">
+                <input type="checkbox" id="outerGlowEnabled"> Outer glow
+              </label>
+              <div id="outerGlowColorWrap" class="border-global-glow-picker is-disabled">
+                <div class="color-picker-container qr-paint-picker compact-paint-picker">
+                  <div class="color-display" data-color="#3b82f6" style="--color-value:#3b82f6" id="outerGlowColorDisplay"></div>
+                  <div class="color-picker-dropdown" id="outerGlowColorPicker">
+                    <div class="color-palette" id="outerGlowColorPalette"></div>
+                    <div class="color-input-group">
+                      <input type="text" class="color-input" id="outerGlowColorInput" value="#3b82f6" pattern="^#[0-9A-Fa-f]{6}$">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="framesContainer" class="mb-2"></div>
-          <button id="addFrame" type="button" class="btn btn-outline-secondary btn-sm w-100">+ Add Frame</button>
+          <button id="addFrame" type="button" class="btn btn-outline-secondary btn-sm w-100">+ Add Border</button>
         </div>
 
         <div id="templateSection" class="template-control-card mb-3 p-2 border rounded bg-light">
@@ -1294,8 +1679,8 @@
 
           <textarea id="templateText" class="form-control form-control-sm mb-2" rows="3" placeholder="Text around QR code" maxlength="240"></textarea>
 
-          <div class="row g-2 mb-2">
-            <div class="col-6">
+          <div class="template-select-row">
+            <div class="template-select-field">
               <label for="templateSideButton" class="form-label">Side</label>
               <select id="templateSide" class="styled-native-select" aria-hidden="true" tabindex="-1">
                 <option value="bottom" selected>Bottom</option>
@@ -1304,7 +1689,17 @@
                 <option value="right">Right</option>
               </select>
             </div>
-            <div class="col-6">
+
+            <div class="template-select-field">
+              <label for="templateWeightButton" class="form-label">Style</label>
+              <select id="templateWeight" class="styled-native-select" aria-hidden="true" tabindex="-1">
+                <option value="400" selected>Regular</option>
+                <option value="600">Semi-bold</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+
+            <div class="template-select-field">
               <label for="templateFontButton" class="form-label">Font</label>
               <select id="templateFont" class="font-native-select" aria-hidden="true" tabindex="-1">
                 <optgroup label="Sans serif">
@@ -1342,31 +1737,20 @@
             </div>
           </div>
 
-          <div class="mb-2">
-            <label for="templateWeightButton" class="form-label">Style</label>
-            <select id="templateWeight" class="styled-native-select" aria-hidden="true" tabindex="-1">
-              <option value="400" selected>Regular</option>
-              <option value="600">Semi-bold</option>
-              <option value="700">Bold</option>
-            </select>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label">Text color</label>
-            <div class="template-color-line">
-              <label class="template-color-match" title="Match foreground color">
-                <input type="checkbox" id="templateTextMatchFg"> ✓ Fore
-              </label>
-              <div class="color-picker-container qr-paint-picker compact-paint-picker template-color-picker flex-grow-1">
-                <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="templateColorDisplay"></div>
-                <div class="color-picker-dropdown" id="templateColorPicker">
-                  <div class="color-palette" id="templateColorPalette"></div>
-                  <div class="color-input-group">
-                    <input type="text" class="color-input" id="templateColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
-                  </div>
+          <div class="template-color-line mb-2">
+            <label class="form-label mb-0">Font color</label>
+            <div class="color-picker-container qr-paint-picker compact-paint-picker template-color-picker flex-grow-1">
+              <div class="color-display" data-color="#ffffff" style="--color-value:#ffffff" id="templateColorDisplay"></div>
+              <div class="color-picker-dropdown" id="templateColorPicker">
+                <div class="color-palette" id="templateColorPalette"></div>
+                <div class="color-input-group">
+                  <input type="text" class="color-input" id="templateColorInput" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
                 </div>
               </div>
             </div>
+            <label class="template-color-match" title="Match foreground color">
+              <input type="checkbox" id="templateTextMatchFg"> ✓ Foreground
+            </label>
           </div>
 
           <div class="d-flex align-items-center gap-2 mb-2">
@@ -1419,8 +1803,8 @@
   <script src="src/js/color-categories.js"></script>
   <script>
     const DISPLAY_SIZE=800,CANVAS_SCALE=2,SIZE=DISPLAY_SIZE*CANVAS_SCALE,MAX_LEN=1500,QR_DELAY=200,FRAME_DELAY=120,QR_MARGIN=20*CANVAS_SCALE,QR_CORNER_RADIUS=8*CANVAS_SCALE;
-    let selectedLogo=null,baseCanvas=null,finalCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),logoColorCache=new Map(),qrRunId=0;
-    let templateTextColorPicker=null,currentSuggestedColors=[];
+    let selectedLogo=null,baseCanvas=null,finalCanvas=null,qrTimer=null,frameTimer=null,logoUrls=[],frameColorPickers=[],logoInfoCache=new Map(),logoColorCache=new Map(),logoColorPromiseCache=new Map(),qrRunId=0;
+    let templateTextColorPicker=null,outerGlowColorPicker=null,currentSuggestedColors=[];
     const allColorPickers=[];
     const ORGANIZED_COLOR_ROWS = [
       { name:'Neutral', colors:['#000000','#1f2937','#374151','#4b5563','#6b7280','#9ca3af','#d1d5db','#e5e7eb','#f3f4f6','#ffffff'] },
@@ -1471,10 +1855,18 @@
       const input=$(`#${inputId}`);
       const allowGradient=!!options.allowGradient;
       const initialColor=String(display.attr('data-color') || '#000000').toLowerCase();
+      const initialSecondColor=String(options.secondColor || (initialColor === '#ffffff' ? '#0d6efd' : '#ffffff')).toLowerCase();
+      let initialAngle=Number.isFinite(Number(options.angle)) ? Number(options.angle) : 90;
+      initialAngle=((initialAngle % 360) + 360) % 360;
+      const initialColors=[initialColor, initialSecondColor];
+      if(initialAngle > 180) {
+        initialAngle-=180;
+        initialColors.reverse();
+      }
       const state={
         type:'solid',
-        colors:[initialColor, String(options.secondColor || (initialColor === '#ffffff' ? '#0d6efd' : '#ffffff')).toLowerCase()],
-        angle:Number.isFinite(Number(options.angle)) ? Number(options.angle) : 90,
+        colors:initialColors,
+        angle:initialAngle,
         activeStop:0,
         editorHue:[0,0],
         editorSaturation:[0,0],
@@ -1491,8 +1883,33 @@
           <div class="gradient-controls">
             <div class="gradient-angle-row">
               <label>Angle</label>
-              <input type="range" class="form-range range-modern gradient-angle-input" min="0" max="360" step="5" value="${state.angle}" aria-label="Gradient angle">
+              <input type="range" class="form-range range-modern gradient-angle-input" min="0" max="180" step="5" value="${state.angle}" aria-label="Gradient angle">
               <span class="gradient-angle-value">${state.angle}°</span>
+              <button type="button" class="gradient-flip-btn" aria-label="Flip gradient colors" title="Flip gradient colors">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 7h11m0 0-3-3m3 3-3 3M17 17H6m0 0 3 3m-3-3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="gradient-samples" aria-label="Gradient samples">
+              <div class="gradient-sample-row">
+                <button type="button" class="gradient-sample" data-color-1="#2563eb" data-color-2="#7c3aed" data-angle="90" style="--gradient-sample:linear-gradient(90deg,#2563eb,#7c3aed)" aria-label="Blue to violet gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#06b6d4" data-color-2="#2563eb" data-angle="90" style="--gradient-sample:linear-gradient(90deg,#06b6d4,#2563eb)" aria-label="Cyan to blue gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#10b981" data-color-2="#06b6d4" data-angle="90" style="--gradient-sample:linear-gradient(90deg,#10b981,#06b6d4)" aria-label="Green to cyan gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#f97316" data-color-2="#ef4444" data-angle="90" style="--gradient-sample:linear-gradient(90deg,#f97316,#ef4444)" aria-label="Orange to red gradient"></button>
+              </div>
+              <div class="gradient-sample-row">
+                <button type="button" class="gradient-sample" data-color-1="#ec4899" data-color-2="#8b5cf6" data-angle="135" style="--gradient-sample:linear-gradient(135deg,#ec4899,#8b5cf6)" aria-label="Pink to purple gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#f59e0b" data-color-2="#ec4899" data-angle="135" style="--gradient-sample:linear-gradient(135deg,#f59e0b,#ec4899)" aria-label="Gold to pink gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#84cc16" data-color-2="#14b8a6" data-angle="135" style="--gradient-sample:linear-gradient(135deg,#84cc16,#14b8a6)" aria-label="Lime to teal gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#0f172a" data-color-2="#6366f1" data-angle="135" style="--gradient-sample:linear-gradient(135deg,#0f172a,#6366f1)" aria-label="Navy to indigo gradient"></button>
+              </div>
+              <div class="gradient-sample-row">
+                <button type="button" class="gradient-sample" data-color-1="#111827" data-color-2="#94a3b8" data-angle="90" style="--gradient-sample:linear-gradient(90deg,#111827,#94a3b8)" aria-label="Dark to silver gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#facc15" data-color-2="#fb7185" data-angle="45" style="--gradient-sample:linear-gradient(45deg,#facc15,#fb7185)" aria-label="Yellow to rose gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#e0f2fe" data-color-2="#38bdf8" data-angle="180" style="--gradient-sample:linear-gradient(180deg,#e0f2fe,#38bdf8)" aria-label="Ice blue gradient"></button>
+                <button type="button" class="gradient-sample" data-color-1="#22d3ee" data-color-2="#a855f7" data-angle="45" style="--gradient-sample:linear-gradient(45deg,#22d3ee,#a855f7)" aria-label="Neon cyan to purple gradient"></button>
+              </div>
             </div>
           </div>`);
       }
@@ -1502,8 +1919,26 @@
           <div class="palette-section-label">Image colors</div>
           <div class="palette-image-grid"></div>
         </div>
-        <div class="palette-section-label">Color shades</div>
-        <div class="palette-family-grid"></div>`);
+        <div class="color-editor-accordion">
+          <div class="color-editor-section open" data-editor-section="shades">
+            <button type="button" class="color-editor-toggle" aria-expanded="true">
+              <span>Color shades</span><span class="color-editor-chevron">▾</span>
+            </button>
+            <div class="color-editor-panel">
+              <div class="color-editor-panel-inner color-shades-inner">
+                <div class="palette-family-grid"></div>
+              </div>
+            </div>
+          </div>
+          <div class="color-editor-section" data-editor-section="custom">
+            <button type="button" class="color-editor-toggle" aria-expanded="false">
+              <span>Custom color</span><span class="color-editor-chevron">▾</span>
+            </button>
+            <div class="color-editor-panel">
+              <div class="color-editor-panel-inner custom-color-editor-host"></div>
+            </div>
+          </div>
+        </div>`);
 
       const inputGroup=input.closest('.color-input-group');
       inputGroup.addClass('color-stop-input active').attr('data-gradient-stop','0');
@@ -1529,7 +1964,7 @@
 
       const customEditor=$( `
         <div class="custom-color-editor">
-          <div class="custom-color-editor-title"><span>Custom color</span><span class="custom-color-value"></span></div>
+          <div class="custom-color-editor-title"><span>Selected</span><span class="custom-color-value"></span></div>
           <div class="custom-color-axis-grid">
             <div class="custom-axis-wrap">
               <span class="custom-axis-label">Sat</span>
@@ -1554,7 +1989,7 @@
             </div>
           </div>
         </div>`);
-      picker.append(customEditor);
+      palette.find('.custom-color-editor-host').append(customEditor);
 
       const spectrum=customEditor.find('.custom-color-spectrum');
       const spectrumCursor=customEditor.find('.custom-color-spectrum-cursor');
@@ -1680,6 +2115,14 @@
           picker.find('.gradient-angle-value').text(`${state.angle}°`);
           const angleInput=picker.find('.gradient-angle-input')[0];
           if (angleInput && typeof updateRangeFill === 'function') updateRangeFill(angleInput);
+          picker.find('.gradient-sample').each(function(){
+            const sample=$(this);
+            sample.toggleClass('active',
+              normalizeColor(sample.attr('data-color-1')) === state.colors[0] &&
+              normalizeColor(sample.attr('data-color-2')) === state.colors[1] &&
+              Number(sample.attr('data-angle')) === state.angle
+            );
+          });
         }
 
         if (notify) onChange(state.colors[0], source, getPaint());
@@ -1708,7 +2151,11 @@
         const grid=palette.find('.palette-image-grid').empty();
         const unique=[...new Set(colors.map(color=>normalizeColor(color)))].slice(0,10);
         unique.forEach(col=>grid.append(addSwatch(col,'image-suggested-swatch')));
-        section.prop('hidden',!unique.length);
+        const hasSuggestedColors = unique.length > 0;
+        section
+          .prop('hidden', !hasSuggestedColors)
+          .toggleClass('is-visible', hasSuggestedColors)
+          .attr('aria-hidden', hasSuggestedColors ? 'false' : 'true');
         updateSelectedSwatch();
       }
 
@@ -1739,9 +2186,16 @@
 
       function setPaint(paint={}, source='api') {
         state.type=allowGradient && paint.type === 'gradient' ? 'gradient' : 'solid';
-        state.colors[0]=normalizeColor(paint.color1 || paint.color || state.colors[0]);
-        state.colors[1]=normalizeColor(paint.color2 || state.colors[1]);
-        state.angle=Math.max(0, Math.min(360, Number(paint.angle) || 0));
+        let color1=normalizeColor(paint.color1 || paint.color || state.colors[0]);
+        let color2=normalizeColor(paint.color2 || state.colors[1]);
+        let angle=((Number(paint.angle) || 0) % 360 + 360) % 360;
+        if(angle > 180) {
+          angle-=180;
+          [color1,color2]=[color2,color1];
+        }
+        state.colors[0]=color1;
+        state.colors[1]=color2;
+        state.angle=angle;
         state.colors.forEach((color,index)=>{
           const rgb=hexToRgbLocal(color),hsv=rgbToHsvLocal(rgb.r,rgb.g,rgb.b);
           state.editorBrightness[index]=hsv.v;
@@ -1889,6 +2343,25 @@
         setColor(rgbObjectToHex(hsvToRgbLocal(hsv.h,hsv.s,hsv.v)),'user',hsv);
       });
 
+      function openColorEditorSection(sectionName) {
+        const sections=palette.find('.color-editor-section');
+        sections.each(function(){
+          const section=$(this);
+          const isOpen=section.attr('data-editor-section') === sectionName;
+          section.toggleClass('open', isOpen);
+          section.find('.color-editor-toggle').attr('aria-expanded', String(isOpen));
+        });
+        requestAnimationFrame(positionPicker);
+        setTimeout(positionPicker, 230);
+      }
+
+      palette.on('click', '.color-editor-toggle', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        const section=$(this).closest('.color-editor-section');
+        if (!section.hasClass('open')) openColorEditorSection(section.attr('data-editor-section'));
+      });
+
       display.attr('tabindex','0').on('click keydown', e => {
         if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
         if (e.type === 'keydown') e.preventDefault();
@@ -1906,10 +2379,33 @@
           e.stopPropagation();
           setMode($(this).data('paint-mode'), 'user');
           requestAnimationFrame(positionPicker);
+          setTimeout(positionPicker, 220);
         });
         picker.on('input', '.gradient-angle-input', function(){
-          state.angle=Math.max(0, Math.min(360, Number(this.value) || 0));
+          state.angle=Math.max(0, Math.min(180, Number(this.value) || 0));
           updateUi('user', true);
+        });
+        picker.on('click', '.gradient-flip-btn', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          [state.colors[0],state.colors[1]]=[state.colors[1],state.colors[0]];
+          [state.editorHue[0],state.editorHue[1]]=[state.editorHue[1],state.editorHue[0]];
+          [state.editorSaturation[0],state.editorSaturation[1]]=[state.editorSaturation[1],state.editorSaturation[0]];
+          [state.editorBrightness[0],state.editorBrightness[1]]=[state.editorBrightness[1],state.editorBrightness[0]];
+          state.activeStop=state.activeStop === 0 ? 1 : 0;
+          updateUi('user', true);
+        });
+        picker.on('click', '.gradient-sample', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          const sample=$(this);
+          setPaint({
+            type:'gradient',
+            color1:sample.attr('data-color-1'),
+            color2:sample.attr('data-color-2'),
+            angle:Number(sample.attr('data-angle')) || 0
+          }, 'user');
+          requestAnimationFrame(positionPicker);
         });
       }
 
@@ -1959,21 +2455,37 @@
 
       const sourceWidth = img.naturalWidth || img.width;
       const sourceHeight = img.naturalHeight || img.height;
-      const maxSampleDimension = 420;
+      const maxSampleDimension = 480;
       const scale = Math.min(1, maxSampleDimension / Math.max(sourceWidth, sourceHeight));
       const canvas = document.createElement('canvas');
       canvas.width = Math.max(1, Math.round(sourceWidth * scale));
       canvas.height = Math.max(1, Math.round(sourceHeight * scale));
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
+      function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const d = max - min;
+        let h = 0;
+        if (d) {
+          switch (max) {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+            case g: h = ((b - r) / d + 2); break;
+            default: h = ((r - g) / d + 4); break;
+          }
+          h *= 60;
+        }
+        const s = max === 0 ? 0 : d / max;
+        const v = max;
+        return { h, s, v };
+      }
+
       try {
-        // Nearest-neighbor sampling preserves actual source pixel values instead of
-        // creating averaged colors during the analysis resize.
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         const buckets = new Map();
-        const bucketStep = 8;
+        const bucketStep = 12;
 
         for (let i = 0; i < pixels.length; i += 4) {
           const alpha = pixels[i + 3];
@@ -1982,10 +2494,7 @@
           const r = pixels[i];
           const g = pixels[i + 1];
           const b = pixels[i + 2];
-          const bucketR = Math.floor(r / bucketStep);
-          const bucketG = Math.floor(g / bucketStep);
-          const bucketB = Math.floor(b / bucketStep);
-          const bucketKey = `${bucketR},${bucketG},${bucketB}`;
+          const bucketKey = `${Math.floor(r / bucketStep)},${Math.floor(g / bucketStep)},${Math.floor(b / bucketStep)}`;
           const exactKey = `${r},${g},${b}`;
           let bucket = buckets.get(bucketKey);
 
@@ -1998,8 +2507,6 @@
           bucket.exact.set(exactKey, (bucket.exact.get(exactKey) || 0) + 1);
         }
 
-        // Each cluster is represented by a real pixel from the image—the most
-        // frequent exact color inside that cluster—rather than an averaged shade.
         const ranked = [...buckets.values()]
           .map(bucket => {
             let representative = null;
@@ -2011,26 +2518,42 @@
               }
             });
             const [r, g, b] = representative.split(',').map(Number);
-            return { r, g, b, count: bucket.count, exactCount: representativeCount };
+            const hsv = rgbToHsv(r, g, b);
+            const neutrality = hsv.s < 0.14 ? 1 : 0;
+            const vividBoost = 1 + hsv.s * 0.85 + Math.max(0, hsv.v - 0.18) * 0.18;
+            const score = bucket.count * vividBoost * (neutrality ? 0.72 : 1);
+            return { r, g, b, count: bucket.count, exactCount: representativeCount, hsv, neutrality, score };
           })
-          .sort((a, b) => (b.count - a.count) || (b.exactCount - a.exactCount));
+          .sort((a, b) => (b.score - a.score) || (b.count - a.count) || (b.exactCount - a.exactCount));
 
         const selected = [];
-        const minimumDistance = 36;
+        let neutralCount = 0;
+        const primaryDistance = 54;
+        const secondaryDistance = 34;
+
         for (const candidate of ranked) {
-          if (selected.every(existing => colorDistance(candidate, existing) >= minimumDistance)) {
+          if (candidate.neutrality && neutralCount >= 2) continue;
+          const uniqueEnough = selected.every(existing => colorDistance(candidate, existing) >= primaryDistance);
+          const hueUniqueEnough = selected.every(existing => {
+            if (candidate.hsv.s < 0.16 || existing.hsv.s < 0.16) return true;
+            const hueDiff = Math.abs(candidate.hsv.h - existing.hsv.h);
+            return Math.min(hueDiff, 360 - hueDiff) >= 16;
+          });
+          if (uniqueEnough && hueUniqueEnough) {
             selected.push(candidate);
+            if (candidate.neutrality) neutralCount += 1;
             if (selected.length >= maxColors) break;
           }
         }
 
-        // If the image contains only very similar shades, fill remaining slots with
-        // the next most common exact colors instead of returning fewer unnecessarily.
         if (selected.length < maxColors) {
           for (const candidate of ranked) {
             if (selected.some(existing => existing.r === candidate.r && existing.g === candidate.g && existing.b === candidate.b)) continue;
-            if (selected.every(existing => colorDistance(candidate, existing) >= 18)) {
+            if (candidate.neutrality && neutralCount >= 2) continue;
+            const uniqueEnough = selected.every(existing => colorDistance(candidate, existing) >= secondaryDistance);
+            if (uniqueEnough) {
               selected.push(candidate);
+              if (candidate.neutrality) neutralCount += 1;
               if (selected.length >= maxColors) break;
             }
           }
@@ -2047,21 +2570,131 @@
       allColorPickers.forEach(picker => picker.setSuggestedColors(currentSuggestedColors));
     }
 
-    function updateSuggestedColorsForImage(img) {
+    function getImageColorKeys(img) {
+      if (!img) return [];
+      const keys = [img.currentSrc, img.getAttribute && img.getAttribute('src'), img.src]
+        .filter(Boolean)
+        .map(value => String(value));
+      return [...new Set(keys)];
+    }
+
+    function getCachedSuggestedColorsForImage(img) {
+      const dataColors = $(img).data('suggestedColors');
+      if (Array.isArray(dataColors) && dataColors.length) return dataColors.slice(0, 10);
+      for (const key of getImageColorKeys(img)) {
+        const cached = logoColorCache.get(key);
+        if (Array.isArray(cached) && cached.length) return cached.slice(0, 10);
+      }
+      return [];
+    }
+
+    function cacheSuggestedColorsForImage(img, colors) {
+      const unique = Array.isArray(colors) ? colors.slice(0, 10) : [];
+      if (!img || !unique.length) return;
+      $(img).data('suggestedColors', unique);
+      getImageColorKeys(img).forEach(key => logoColorCache.set(key, unique));
+    }
+
+    function isImageCurrentlySelected(img) {
+      if (!img) return false;
+      return getImageColorKeys(img).some(key => key === selectedLogo);
+    }
+
+    function loadPaletteSafeImage(source) {
+      return fetch(source, { cache: 'force-cache' })
+        .then(response => {
+          if (!response.ok) throw new Error(`Image request failed: ${response.status}`);
+          return response.blob();
+        })
+        .then(blob => new Promise((resolve, reject) => {
+          const objectUrl = URL.createObjectURL(blob);
+          const probe = new Image();
+          probe.onload = () => resolve({ image: probe, objectUrl });
+          probe.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error('Unable to prepare image for palette extraction.'));
+          };
+          probe.src = objectUrl;
+        }));
+    }
+
+    function updateSuggestedColorsForImage(img, options = {}) {
+      const { clearIfPending = true } = options;
+
       if (!img || !img.src) {
         applySuggestedColors([]);
         return;
       }
 
-      const cacheKey = img.currentSrc || img.src;
-      if (logoColorCache.has(cacheKey)) {
-        applySuggestedColors(logoColorCache.get(cacheKey));
+      if (!(img.naturalWidth || img.width) || !(img.naturalHeight || img.height)) {
+        if (clearIfPending && isImageCurrentlySelected(img)) applySuggestedColors([]);
+        $(img).off('load.imageColors').one('load.imageColors', function() {
+          updateSuggestedColorsForImage(this, options);
+        });
         return;
       }
 
-      const colors = extractDominantColors(img, 10);
-      logoColorCache.set(cacheKey, colors);
-      applySuggestedColors(colors);
+      const cached = getCachedSuggestedColorsForImage(img);
+      if (cached.length) {
+        if (isImageCurrentlySelected(img)) applySuggestedColors(cached);
+        return;
+      }
+
+      if (clearIfPending && isImageCurrentlySelected(img)) {
+        // Do not leave the previous image's palette visible while this image is still loading.
+        applySuggestedColors([]);
+      }
+
+      const visibleKey = img.currentSrc || img.src;
+      const sourceKey = img.getAttribute('src') || visibleKey;
+
+      const directColors = extractDominantColors(img, 10);
+      if (directColors.length) {
+        cacheSuggestedColorsForImage(img, directColors);
+        if (isImageCurrentlySelected(img)) applySuggestedColors(directColors);
+        return;
+      }
+
+      let pending = logoColorPromiseCache.get(sourceKey);
+      if (!pending) {
+        pending = loadPaletteSafeImage(sourceKey)
+          .then(({ image, objectUrl }) => {
+            try {
+              return extractDominantColors(image, 10);
+            } finally {
+              URL.revokeObjectURL(objectUrl);
+            }
+          })
+          .catch(() => [])
+          .finally(() => logoColorPromiseCache.delete(sourceKey));
+        logoColorPromiseCache.set(sourceKey, pending);
+      }
+
+      pending.then(colors => {
+        if (!colors.length) return;
+        cacheSuggestedColorsForImage(img, colors);
+        logoColorCache.set(visibleKey, colors);
+        logoColorCache.set(sourceKey, colors);
+        if (isImageCurrentlySelected(img)) {
+          applySuggestedColors(colors);
+        }
+      });
+    }
+
+    function refreshExistingLogoColors() {
+      const selectedImage = $('#logoBar img.logo-thumb.selected')[0];
+      const firstExistingImage = $('#logoBar img.logo-thumb').first()[0];
+      const image = selectedImage || firstExistingImage;
+      if (!image) return;
+
+      const src = image.currentSrc || image.src;
+      if (!selectedLogo) {
+        selectedLogo = src;
+        $('.logo-thumb').removeClass('selected');
+        $(image).addClass('selected');
+        updateLogoControlsAvailability();
+      }
+      if (selectedLogo === src) updateSuggestedColorsForImage(image);
     }
 
     function syncMatchedFrameColors() {
@@ -2087,6 +2720,17 @@
     const fgColorPicker=initColorPicker('fgColorDisplay','fgColorPicker','fgColorPalette','fgColorInput',null,()=>{syncMatchedTemplateColors();syncMatchedFrameColors();scheduleQR();},{allowGradient:true,secondColor:'#0d6efd',angle:90});
     const bgColorPicker=initColorPicker('bgColorDisplay','bgColorPicker','bgColorPalette','bgColorInput',null,()=>{syncMatchedFrameColors();scheduleQR();},{allowGradient:true,secondColor:'#334155',angle:90});
     templateTextColorPicker=initColorPicker('templateColorDisplay','templateColorPicker','templateColorPalette','templateColorInput',null,()=>scheduleFrame(),{allowGradient:true,secondColor:'#0d6efd',angle:90});
+    outerGlowColorPicker=initColorPicker('outerGlowColorDisplay','outerGlowColorPicker','outerGlowColorPalette','outerGlowColorInput',null,()=>scheduleFrame(),{allowGradient:false,secondColor:'#3b82f6',angle:90});
+
+    function updateOuterGlowUi() {
+      $('#outerGlowColorWrap').toggleClass('is-disabled', !$('#outerGlowEnabled').prop('checked'));
+    }
+
+    $('#outerGlowEnabled').on('change', function() {
+      updateOuterGlowUi();
+      scheduleFrame();
+    });
+    updateOuterGlowUi();
 
     $('#swapQrColors').on('click', function() {
       const foreground = fgColorPicker.getPaint();
@@ -2141,35 +2785,111 @@
     ];
 
     // --- "No Image" / Clear Logo option (always first in the bar) ---
+    function animateInsertedElement(element, mode = 'pop', onComplete = null) {
+      const node = element && element.jquery ? element[0] : element;
+      if (!node) return;
+
+      if (mode === 'expand') {
+        node.classList.add('ui-enter-expand');
+        requestAnimationFrame(() => {
+          const targetHeight = Math.max(1, node.scrollHeight);
+          node.style.setProperty('--ui-enter-height', `${targetHeight}px`);
+          requestAnimationFrame(() => node.classList.add('is-visible'));
+        });
+        setTimeout(() => {
+          node.classList.remove('ui-enter-expand', 'is-visible');
+          node.style.removeProperty('--ui-enter-height');
+          if (typeof onComplete === 'function') onComplete();
+        }, 300);
+        return;
+      }
+
+      node.classList.remove('ui-enter-pop');
+      void node.offsetWidth;
+      node.classList.add('ui-enter-pop');
+      setTimeout(() => {
+        node.classList.remove('ui-enter-pop');
+        if (typeof onComplete === 'function') onComplete();
+      }, 240);
+    }
+
     const noLogoContainer = $('<div>').addClass('logo-container no-logo');
     const noLogoThumb = $('<div>')
       .addClass('logo-thumb no-logo-thumb')
+      .attr({
+        'aria-label': 'No image',
+        'title': 'No image',
+        'role': 'button',
+        'tabindex': '0'
+      })
       .css({
         'background-color': '#f1f3f5',
         'display': 'flex',
         'align-items': 'center',
         'justify-content': 'center',
-        'font-size': '12px',
-        'color': '#495057',
-        'font-weight': '600',
-        'letter-spacing': '0.5px'
+        'color': '#495057'
       })
-      .text('None');
+      .html('<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7 16l3.2-3.4 2.4 2.3 1.8-1.9L18 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="1.25" fill="currentColor"/><path d="M3.5 3.5l17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>');
     noLogoContainer.append(noLogoThumb);
+
+    let paddingSafetyFlashTimer = null;
+
+    function updateLogoControlsAvailability() {
+      const hasLogo = !!selectedLogo;
+      $('#logoAdjustmentControls')
+        .toggleClass('is-visible', hasLogo)
+        .attr('aria-hidden', hasLogo ? 'false' : 'true');
+      $('#logoSizeDial, #logoPaddingDial').prop('disabled', !hasLogo);
+      if (!hasLogo) {
+        $('#logoPaddingSafety').removeClass('is-visible flash').attr('aria-hidden', 'true');
+      } else {
+        updatePaddingSafetyIndicator();
+      }
+    }
+
+    function updatePaddingSafetyIndicator(flash = false) {
+      const dial = $('#logoPaddingDial');
+      const baseMax = Number(dial.attr('data-base-max')) || 6;
+      const max = Number(dial.attr('max'));
+      const value = Number(dial.val()) || 0;
+      const limited = !!selectedLogo && Number.isFinite(max) && max < baseMax && value >= max;
+      const indicator = $('#logoPaddingSafety');
+
+      indicator
+        .toggleClass('is-visible', limited)
+        .attr('aria-hidden', limited ? 'false' : 'true');
+
+      if (limited && flash) {
+        indicator.removeClass('flash');
+        void indicator[0].offsetWidth;
+        indicator.addClass('flash');
+        clearTimeout(paddingSafetyFlashTimer);
+        paddingSafetyFlashTimer = setTimeout(() => indicator.removeClass('flash'), 450);
+      }
+    }
+
     noLogoThumb.on('click', function() {
       $('.logo-thumb').removeClass('selected');
       $(this).addClass('selected');
       selectedLogo = null;
       applySuggestedColors([]);
+      updateLogoControlsAvailability();
       scheduleQR();
+    });
+    noLogoThumb.on('keydown', function(event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        $(this).trigger('click');
+      }
     });
     // Insert as the very first item (before preloaded logos + Add button)
     $('#logoBar').prepend(noLogoContainer);
+    updateLogoControlsAvailability();
 
     preloadImages.forEach(url => {
       logoUrls.push(url);
       const c = $('<div>').addClass('logo-container');
-      const img = $('<img>', { src: url, class: 'logo-thumb' });
+      const img = $('<img>', { src: url, class: 'logo-thumb', crossorigin: 'anonymous' });
       const rm = $('<button>', {
         class: 'remove-logo btn-close',
         html: 'X',
@@ -2179,6 +2899,7 @@
           logoUrls = logoUrls.filter(u => u !== src);
           logoInfoCache.delete(src);
           logoColorCache.delete(src);
+          logoColorPromiseCache.delete(src);
           if (selectedLogo === src) {
             selectedLogo = null;
             if (logoUrls.length) {
@@ -2192,6 +2913,7 @@
               $('.no-logo-thumb').addClass('selected');
               applySuggestedColors([]);
             }
+            updateLogoControlsAvailability();
             scheduleQR();
           }
           $(e.currentTarget).closest('.logo-container').fadeOut(300, function () {
@@ -2200,22 +2922,36 @@
         }
       });
 
-      img.on('load', function () {
+      let mounted = false;
+      img.on('click', function () {
+        $('.logo-thumb').removeClass('selected');
+        $(this).addClass('selected');
+        selectedLogo = this.currentSrc || this.src;
+        updateSuggestedColorsForImage(this);
+        updateLogoControlsAvailability();
+        scheduleQR();
+      });
+
+      function mountPreloadedLogo() {
+        const image = img[0];
+        if (mounted || !(image.naturalWidth || image.width) || !(image.naturalHeight || image.height)) return;
+        mounted = true;
         c.append(img).append(rm);
         $('.add-image-btn').before(c);
-        img.on('click', function () {
-          $('.logo-thumb').removeClass('selected');
-          $(this).addClass('selected');
-          selectedLogo = this.src;
-          updateSuggestedColorsForImage(this);
-          scheduleQR();
-        });
-        if (!selectedLogo) {
-          img.click();
-        }
-      });
+        animateInsertedElement(c, 'pop');
+        updateSuggestedColorsForImage(image, { clearIfPending: false });
+        if (!selectedLogo) img.trigger('click');
+        else if (selectedLogo === (image.currentSrc || image.src)) updateSuggestedColorsForImage(image);
+      }
+
+      img.on('load', mountPreloadedLogo);
+      if (img[0].complete) requestAnimationFrame(mountPreloadedLogo);
     });
 
+    // Also initialize colors for images that were already present or loaded from
+    // cache before the dynamic load callback could run.
+    requestAnimationFrame(refreshExistingLogoColors);
+    $(window).one('load.imageColorsInit', refreshExistingLogoColors);
 
     $('#logoInput').on('change',function(){
       const addedFiles = [...this.files];
@@ -2230,6 +2966,7 @@
           logoUrls=logoUrls.filter(u=>u!==src);
           logoInfoCache.delete(src);
           logoColorCache.delete(src);
+          logoColorPromiseCache.delete(src);
           if(selectedLogo===src){
             selectedLogo=null;
             if(logoUrls.length){
@@ -2244,6 +2981,7 @@
               $('.no-logo-thumb').addClass('selected');
               applySuggestedColors([]);
             }
+            updateLogoControlsAvailability();
             scheduleQR();
           }
           $(e.currentTarget).closest('.logo-container').fadeOut(300,function(){$(this).remove();});
@@ -2252,7 +2990,8 @@
         img.on('load',function(){
           c.append(img).append(rm);
           $('.add-image-btn').before(c);
-          img.on('click',function(){$('.logo-thumb').removeClass('selected');$(this).addClass('selected');selectedLogo=this.src;updateSuggestedColorsForImage(this);scheduleQR();});
+          animateInsertedElement(c, 'pop');
+          img.on('click',function(){$('.logo-thumb').removeClass('selected');$(this).addClass('selected');selectedLogo=this.src;updateSuggestedColorsForImage(this);updateLogoControlsAvailability();scheduleQR();});
           if(fileIndex===0){img.click();}
         });
       });
@@ -2270,10 +3009,10 @@
               <div class="frame-color-picker"></div>
               <div class="frame-match-options">
                 <label class="frame-color-match" title="Match foreground color">
-                  <input type="checkbox" class="frame-match-fore"> ✓ Fore
+                  <input type="checkbox" class="frame-match-fore"> ✓ Foreground
                 </label>
                 <label class="frame-color-match" title="Match background color">
-                  <input type="checkbox" class="frame-match-back"> ✓ Back
+                  <input type="checkbox" class="frame-match-back"> ✓ Background
                 </label>
               </div>
             </div>
@@ -2289,7 +3028,7 @@
         `);
 
       $('#framesContainer').append(item);
-      requestAnimationFrame(updateFrameScrollState);
+      animateInsertedElement(item, 'expand', updateFrameScrollState);
 
       // color picker
       const framePicker = createFrameColorPicker(
@@ -2303,6 +3042,7 @@
         }
       );
       item.data('colorPicker', framePicker);
+
 
       item.find('.frame-match-fore').on('change', function() {
         if (this.checked) {
@@ -2383,7 +3123,7 @@
         frames.push({
           paint: bgColorPicker.getPaint(),
           thickness: 18,
-          outerFill: true
+          outerFill: false
         });
       }
 
@@ -2401,7 +3141,7 @@
 
     $('#qrtext').on('input',function(){$('#counter').text(`${this.value.length} / ${MAX_LEN}`);scheduleQR();});
     /* ---- style picker ---- */
-    const styleOptions = ['rounded','extra-rounded','square','dots','classy','classy-rounded'];
+    const styleOptions = ['rounded','extra-rounded','square','dots','classy','classy-rounded','heart'];
     const ERROR_CORRECTION_LEVELS = ['L','M','Q','H'];
     const ERROR_CORRECTION_OPTIONS = ['AUTO','L','M','Q','H'];
     const AUTO_ERROR_CORRECTION_ORDER = ['M','Q','H','L'];
@@ -2412,11 +3152,31 @@
     let   logoPaddingModules = Number($('#logoPaddingDial').val()) || 0;
     let   errorCorrectionPreference = 'AUTO';
     let   errorCorrectionLevel = 'M';
+    let   logoPreviewTimer = null;
+    let   lastLogoPreviewAt = 0;
+
+    function formatLogoSizePercent(value) {
+      const normalized = Math.round((Number(value) || 0) * 10) / 10;
+      return Number.isInteger(normalized) ? `${normalized}%` : `${normalized.toFixed(1)}%`;
+    }
+
+    function scheduleLogoPreview() {
+      const elapsed = performance.now() - lastLogoPreviewAt;
+      const delay = Math.max(0, 34 - elapsed);
+      clearTimeout(logoPreviewTimer);
+      logoPreviewTimer = setTimeout(() => {
+        lastLogoPreviewAt = performance.now();
+        generateQR();
+      }, delay);
+    }
 
     $('#logoSizeDial').on('input', function() {
-      logoSize = Number(this.value) / 100;
-      $('#logoSizeValue').text(`${this.value}%`);
+      const percent = Number(this.value) || 0;
+      logoSize = percent / 100;
+      $('#logoSizeValue').text(formatLogoSizePercent(percent));
       updateRangeFill(this);
+      scheduleLogoPreview();
+    }).on('change', function() {
       scheduleQR();
     });
 
@@ -2534,18 +3294,22 @@
     function updateLogoPaddingLabel() {
       $('#logoPaddingValue').text(`${logoPaddingModules} ${logoPaddingModules === 1 ? 'dot' : 'dots'}`);
       updateRangeFill($('#logoPaddingDial')[0]);
+      updatePaddingSafetyIndicator();
     }
 
     function updateLogoSizeLabel() {
-      const value = Math.round(logoSize * 100);
+      const value = Math.round(logoSize * 1000) / 10;
       $('#logoSizeDial').val(value);
-      $('#logoSizeValue').text(`${value}%`);
+      $('#logoSizeValue').text(formatLogoSizePercent(value));
       updateRangeFill($('#logoSizeDial')[0]);
     }
 
     $('#logoPaddingDial').on('input change', function() {
       logoPaddingModules = Math.max(0, Number(this.value) || 0);
       updateLogoPaddingLabel();
+      const baseMax = Number($(this).attr('data-base-max')) || 6;
+      const max = Number(this.max);
+      updatePaddingSafetyIndicator(Number.isFinite(max) && max < baseMax && logoPaddingModules >= max);
       scheduleQR();
     });
 
@@ -2935,8 +3699,10 @@
       const maxLogoW = layout.qrSize * sizeFraction;
       const maxLogoH = layout.qrSize * sizeFraction;
       const fitted = fitRectToAspect(maxLogoW, maxLogoH, aspect);
-      const imageModulesW = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.w / layout.moduleSize)));
-      const imageModulesH = Math.max(1, Math.min(safeModuleCount, Math.round(fitted.h / layout.moduleSize)));
+      // Reserve complete modules for scan safety, but keep the actual image draw
+      // dimensions continuous so the size dial no longer jumps module-by-module.
+      const imageModulesW = Math.max(1, Math.min(safeModuleCount, Math.ceil(fitted.w / layout.moduleSize)));
+      const imageModulesH = Math.max(1, Math.min(safeModuleCount, Math.ceil(fitted.h / layout.moduleSize)));
       const requestedPad = Math.max(0, Math.round(paddingModules));
       const maxPadW = Math.floor((safeModuleCount - imageModulesW) / 2);
       const maxPadH = Math.floor((safeModuleCount - imageModulesH) / 2);
@@ -2949,6 +3715,8 @@
         aspect,
         imageModulesW,
         imageModulesH,
+        requestedDrawW: fitted.w,
+        requestedDrawH: fitted.h,
         padModules,
         modulesW,
         modulesH,
@@ -2998,12 +3766,14 @@
         ? getMaxSafePadding(logoInfo, strongest.moduleCount, strongest.level, logoSize)
         : baseMax;
 
+      const wasClamped = logoPaddingModules > maxPadding;
       $('#logoPaddingDial').attr('max', maxPadding);
-      if (logoPaddingModules > maxPadding) {
+      if (wasClamped) {
         logoPaddingModules = maxPadding;
         $('#logoPaddingDial').val(maxPadding);
         updateLogoPaddingLabel();
       }
+      updatePaddingSafetyIndicator(wasClamped);
     }
 
     function getSafeLevelOrder(preference) {
@@ -3069,7 +3839,11 @@
       const innerY = clearY + metrics.padModules * metrics.moduleSize;
       const innerW = Math.max(metrics.moduleSize, clearW - metrics.padModules * 2 * metrics.moduleSize);
       const innerH = Math.max(metrics.moduleSize, clearH - metrics.padModules * 2 * metrics.moduleSize);
-      const draw = fitRectToAspect(innerW, innerH, metrics.aspect);
+      const draw = fitRectToAspect(
+        Math.min(innerW, metrics.requestedDrawW || innerW),
+        Math.min(innerH, metrics.requestedDrawH || innerH),
+        metrics.aspect
+      );
 
       return {
         moduleX,
@@ -3135,6 +3909,7 @@
       ctx.closePath();
     }
 
+
     function drawStyledModule(ctx, x, y, size, style, neighbors = {}) {
       const bleed = Math.max(0.35, size * 0.035);
       const bx = x - bleed;
@@ -3150,6 +3925,22 @@
 
       if (style === 'square') {
         ctx.fillRect(bx, by, bs, bs);
+        return;
+      }
+
+      if (style === 'heart') {
+        const heartW = bs * 1.16;
+        const heartH = bs * 1.10;
+        const hx = x + (size - heartW) / 2;
+        const hy = y + (size - heartH) / 2 + bs * 0.01;
+        ctx.beginPath();
+        ctx.moveTo(hx + heartW / 2, hy + heartH * 0.96);
+        ctx.bezierCurveTo(hx + heartW * 0.08, hy + heartH * 0.68, hx + heartW * 0.02, hy + heartH * 0.38, hx + heartW * 0.24, hy + heartH * 0.22);
+        ctx.bezierCurveTo(hx + heartW * 0.38, hy + heartH * 0.10, hx + heartW * 0.50, hy + heartH * 0.22, hx + heartW / 2, hy + heartH * 0.32);
+        ctx.bezierCurveTo(hx + heartW * 0.50, hy + heartH * 0.22, hx + heartW * 0.62, hy + heartH * 0.10, hx + heartW * 0.76, hy + heartH * 0.22);
+        ctx.bezierCurveTo(hx + heartW * 0.98, hy + heartH * 0.38, hx + heartW * 0.92, hy + heartH * 0.68, hx + heartW / 2, hy + heartH * 0.96);
+        ctx.closePath();
+        ctx.fill();
         return;
       }
 
@@ -3213,7 +4004,6 @@
       const moduleSize = layout.moduleSize;
       const reserved = getLogoReservedArea(logoInfo, moduleCount, SIZE);
       const useTransparentBackground = !!options.useTransparentBackground;
-
       if (!useTransparentBackground) {
         ctx.fillStyle = createCanvasPaint(ctx, bgPaint, SIZE, SIZE);
         ctx.fillRect(0, 0, SIZE, SIZE);
@@ -3354,6 +4144,86 @@
       });
     }
 
+    function paintToEffectColor(paint, opacity) {
+      const hex = (paint && (paint.color1 || paint.color)) || '#000000';
+      const value = String(hex).trim().replace('#', '');
+      const safe = /^[0-9A-Fa-f]{6}$/.test(value) ? value : '000000';
+      const r = parseInt(safe.slice(0, 2), 16);
+      const g = parseInt(safe.slice(2, 4), 16);
+      const b = parseInt(safe.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${Math.max(0, Math.min(1, opacity || 0))})`;
+    }
+
+    function drawBorderShape(ctx, off, side, radius, outerFill) {
+      if (outerFill) {
+        ctx.fillRect(off, off, side, side);
+        return;
+      }
+      ctx.beginPath();
+      ctx.roundRect(off, off, side, side, radius);
+      ctx.fill();
+    }
+
+    function applyGlobalOuterGlow(canvas, cornerRadius = QR_CORNER_RADIUS) {
+      if (!canvas || !$('#outerGlowEnabled').prop('checked') || !outerGlowColorPicker) return canvas;
+
+      const safeRadius = Math.max(0, Math.min(Number(cornerRadius) || 0, Math.min(canvas.width, canvas.height) / 2));
+      const roundedSource = document.createElement('canvas');
+      roundedSource.width = canvas.width;
+      roundedSource.height = canvas.height;
+      const sourceCtx = roundedSource.getContext('2d');
+      const backgroundPaint = bgColorPicker ? bgColorPicker.getPaint() : { type: 'solid', color1: '#ffffff', color2: '#ffffff', angle: 90 };
+
+      // Paint the rounded silhouette over the same background system used by the QR
+      // and template so anti-aliased edges blend into background instead of leaving
+      // a visible ring.
+      sourceCtx.save();
+      sourceCtx.fillStyle = createCanvasPaint(sourceCtx, backgroundPaint, roundedSource.width, roundedSource.height);
+      sourceCtx.beginPath();
+      sourceCtx.roundRect(0, 0, canvas.width, canvas.height, safeRadius);
+      sourceCtx.fill();
+      sourceCtx.restore();
+
+      sourceCtx.save();
+      sourceCtx.beginPath();
+      sourceCtx.roundRect(0, 0, canvas.width, canvas.height, safeRadius);
+      sourceCtx.clip();
+      sourceCtx.drawImage(canvas, 0, 0);
+      sourceCtx.restore();
+
+      const glowBlur = 18 * CANVAS_SCALE;
+      const glowPadding = Math.ceil(glowBlur * 2.25);
+      const output = document.createElement('canvas');
+      output.width = roundedSource.width + glowPadding * 2;
+      output.height = roundedSource.height + glowPadding * 2;
+      const ctx = output.getContext('2d');
+      const glowPaint = outerGlowColorPicker.getPaint();
+
+      if (!getTemplateOptions()) {
+        ctx.fillStyle = createCanvasPaint(ctx, backgroundPaint, output.width, output.height);
+        ctx.fillRect(0, 0, output.width, output.height);
+      }
+
+      // Render the glow only in the outside region, never on the inside edge.
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, output.width, output.height);
+      ctx.roundRect(glowPadding, glowPadding, roundedSource.width, roundedSource.height, safeRadius);
+      ctx.clip('evenodd');
+      ctx.fillStyle = paintToEffectColor(glowPaint, 1);
+      ctx.shadowColor = paintToEffectColor(glowPaint, .52);
+      ctx.shadowBlur = glowBlur;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.beginPath();
+      ctx.roundRect(glowPadding, glowPadding, roundedSource.width, roundedSource.height, safeRadius);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.drawImage(roundedSource, glowPadding, glowPadding);
+      return output;
+    }
+
     function drawTemplate(canvas) {
       const opt = getTemplateOptions();
       if (!opt) return canvas;
@@ -3436,14 +4306,10 @@
           const f=frames[i],side=size-2*off;
           const distanceFromQr=border-off;
           const radius=Math.min(QR_CORNER_RADIUS+distanceFromQr,side/2);
+          ctx.save();
           ctx.fillStyle=createCanvasPaint(ctx, f.paint, side, side, off, off);
-          if (f.outerFill) {
-            ctx.fillRect(off, off, side, side);
-          } else {
-            ctx.beginPath();
-            ctx.roundRect(off,off,side,side,radius);
-            ctx.fill();
-          }
+          drawBorderShape(ctx, off, side, radius, f.outerFill);
+          ctx.restore();
           off+=f.thickness;
         }
         const innerRadius = Math.min(QR_CORNER_RADIUS, base / 2);
@@ -3468,6 +4334,9 @@
         ctx.drawImage(baseCanvas, border, border);
         ctx.restore();
       }
+      const totalBorder = frames.reduce((sum, frame) => sum + frame.thickness, 0);
+      const outerCornerRadius = Math.min(QR_CORNER_RADIUS + totalBorder, Math.min(canvas.width, canvas.height) / 2);
+      canvas = applyGlobalOuterGlow(canvas, outerCornerRadius);
       canvas = drawTemplate(canvas);
       finalCanvas = canvas;
       $('#qrcode').empty().append(canvas);
