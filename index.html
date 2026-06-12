@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <title>Kia's QR-Codes</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600;700&family=Lato:wght@400;700&family=Lobster&family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&family=Nunito:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@400;600;700&family=Pacifico&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@400;600;700&family=Raleway:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/css/bootstrap.min.css">
   <link rel="stylesheet" href="src/css/styles.css">
 
@@ -19,6 +16,10 @@
       margin-bottom: 0.75rem;
     }
     .preview-panel {
+      align-items: start;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) auto;
       position: sticky;
       top: 20px;
     }
@@ -241,7 +242,8 @@
       color: #495057;
     }
 
-    .font-native-select {
+    .font-native-select,
+    .styled-native-select {
       height: 1px !important;
       left: -9999px !important;
       opacity: 0 !important;
@@ -301,8 +303,10 @@
       border: 1px solid #ced4da;
       border-radius: 8px;
       box-shadow: 0 10px 28px rgba(0,0,0,.16);
-      left: 0;
+      left: auto;
       max-height: 310px;
+      max-width: calc(100vw - 24px);
+      min-width: 100%;
       opacity: 0;
       overflow-x: hidden;
       overflow-y: auto;
@@ -311,6 +315,7 @@
       position: absolute;
       right: 0;
       top: calc(100% + 5px);
+      width: max-content;
       transform: translateY(-5px) scale(.985);
       transform-origin: top center;
       transition: opacity .14s ease, transform .14s ease, visibility .14s ease;
@@ -322,6 +327,15 @@
       pointer-events: auto;
       transform: translateY(0) scale(1);
       visibility: visible;
+    }
+    .font-preview-menu.open-up {
+      bottom: calc(100% + 5px);
+      top: auto;
+      transform: translateY(5px) scale(.985);
+      transform-origin: bottom center;
+    }
+    .font-preview-picker.open .font-preview-menu.open-up {
+      transform: translateY(0) scale(1);
     }
     .font-preview-group-label {
       color: #6c757d;
@@ -341,7 +355,7 @@
       cursor: pointer;
       display: grid;
       gap: 9px;
-      grid-template-columns: 31px minmax(0,1fr);
+      grid-template-columns: 46px minmax(0,1fr);
       min-height: 38px;
       padding: 5px 8px;
       text-align: left;
@@ -364,9 +378,35 @@
     .font-preview-name {
       font-size: 14px;
       line-height: 1.15;
-      overflow: hidden;
-      text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    .uniform-select-menu {
+      max-height: 220px;
+      width: 100%;
+    }
+    .uniform-select-option {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      color: #212529;
+      cursor: pointer;
+      display: flex;
+      font-size: 14px;
+      min-height: 36px;
+      padding: 7px 9px;
+      text-align: left;
+      width: 100%;
+    }
+    .uniform-select-option:hover,
+    .uniform-select-option:focus-visible {
+      background: #f1f5f9;
+      outline: 0;
+    }
+    .uniform-select-option.selected {
+      background: #e7f1ff;
+      color: #0d6efd;
+      font-weight: 600;
     }
     .template-control-card {
       font-size: 13px;
@@ -540,9 +580,41 @@
       overscroll-behavior: contain;
       padding-right: 3px;
     }
-    .download-qr-btn {
-      margin-top: 10px;
-      min-width: 150px;
+    .preview-control-stack {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .preview-icon-button {
+      align-items: center;
+      background: #fff;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      color: #495057;
+      display: inline-flex;
+      height: 34px;
+      justify-content: center;
+      padding: 0;
+      transition: border-color .15s ease, box-shadow .15s ease, color .15s ease, background-color .15s ease;
+      width: 34px;
+    }
+    .preview-icon-button:hover,
+    .preview-icon-button:focus-visible {
+      background: #f8f9fa;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 3px rgba(13,110,253,.12);
+      color: #0d6efd;
+      outline: 0;
+    }
+    .preview-icon-button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+    .preview-icon-button svg {
+      display: block;
+      height: 17px;
+      width: 17px;
     }
     .save-hint {
       color: #6c757d;
@@ -553,6 +625,112 @@
     #templateText {
       min-height: 70px;
       resize: vertical;
+    }
+    .preview-side {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-width: 34px;
+    }
+    .mobile-preview-toggle {
+      display: none;
+    }
+    .mobile-preview-toggle .preview-icon-restore {
+      display: none;
+    }
+    .mobile-preview-toggle[aria-expanded="true"] .preview-icon-expand {
+      display: none;
+    }
+    .mobile-preview-toggle[aria-expanded="true"] .preview-icon-restore {
+      display: block;
+    }
+
+    /* Mobile configurator UX: keep a compact live preview visible while editing. */
+    @media (max-width: 991.98px) {
+      body {
+        align-items: flex-start;
+        padding: 10px 7px 28px;
+      }
+      .container-card {
+        padding: 12px !important;
+      }
+      .preview-column {
+        align-self: flex-start;
+        order: -1;
+        position: sticky;
+        top: max(6px, env(safe-area-inset-top));
+        z-index: 1020;
+      }
+      .preview-panel {
+        align-items: stretch;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        background: rgba(255,255,255,.94);
+        border: 1px solid rgba(206,212,218,.9);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(15,23,42,.14);
+        display: grid;
+        gap: 10px;
+        grid-template-columns: minmax(104px, 1fr) auto;
+        padding: 8px;
+        position: static;
+        top: auto;
+      }
+      .preview-qr-wrap {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        min-width: 0;
+      }
+      .preview-side {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .mobile-preview-toggle {
+        display: inline-flex;
+      }
+      #qrcode.blank-bg {
+        margin: 0;
+        max-width: 138px;
+        width: min(34vw, 138px);
+      }
+      .preview-actions {
+        margin-top: 0;
+      }
+      .save-hint {
+        display: none;
+      }
+      .preview-panel.mobile-preview-expanded {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+      .preview-panel.mobile-preview-expanded #qrcode.blank-bg {
+        max-width: 310px;
+        width: min(76vw, 310px);
+      }
+      .preview-panel.mobile-preview-expanded .preview-side {
+        gap: 7px;
+      }
+      .preview-panel.mobile-preview-expanded ~ * .font-preview-menu,
+      body:has(.preview-panel.mobile-preview-expanded) .font-preview-menu {
+        max-height: min(220px, calc(100dvh - 24px));
+      }
+      #mobileAdvancedHost #advancedSection {
+        margin-bottom: 0 !important;
+      }
+      .range-modern {
+        touch-action: pan-y;
+      }
+      .range-modern.mobile-horizontal-drag::-webkit-slider-thumb {
+        box-shadow: 0 3px 11px rgba(13,110,253,.45);
+        transform: scale(1.1);
+      }
+      .range-modern.mobile-horizontal-drag::-moz-range-thumb {
+        box-shadow: 0 3px 11px rgba(13,110,253,.45);
+        transform: scale(1.1);
+      }
     }
 
     /* The template can make the final canvas non-square.
@@ -635,6 +813,7 @@
           <div id="styleBar" class="d-flex flex-wrap justify-content-center justify-content-lg-start p-2 border rounded bg-light"></div>
         </div>
 
+        <div id="advancedDesktopAnchor" aria-hidden="true"></div>
         <div id="advancedSection" class="advanced-panel template-control-card mb-3 p-2 border rounded bg-light">
           <button type="button" id="advancedToggle" class="advanced-toggle" aria-expanded="false" aria-controls="advancedContent">
             <span>Advanced</span>
@@ -684,8 +863,8 @@
 
           <div class="row g-2 mb-2">
             <div class="col-6">
-              <label for="templateSide" class="form-label">Side</label>
-              <select id="templateSide" class="form-select form-select-sm">
+              <label for="templateSideButton" class="form-label">Side</label>
+              <select id="templateSide" class="styled-native-select" aria-hidden="true" tabindex="-1">
                 <option value="bottom" selected>Bottom</option>
                 <option value="top">Top</option>
                 <option value="left">Left</option>
@@ -695,39 +874,29 @@
             <div class="col-6">
               <label for="templateFontButton" class="form-label">Font</label>
               <select id="templateFont" class="font-native-select" aria-hidden="true" tabindex="-1">
-                <optgroup label="Browser safe">
-                  <option value='Arial, sans-serif' data-font-family="Arial" selected>Arial</option>
+                <optgroup label="Sans serif">
+                  <option value='system-ui, -apple-system, "Segoe UI", sans-serif' data-font-family="system-ui" selected>System UI</option>
+                  <option value='Arial, Helvetica, sans-serif' data-font-family="Arial">Arial</option>
                   <option value='"Arial Black", Arial, sans-serif' data-font-family="Arial Black">Arial Black</option>
-                  <option value='Verdana, sans-serif' data-font-family="Verdana">Verdana</option>
-                  <option value='Tahoma, sans-serif' data-font-family="Tahoma">Tahoma</option>
-                  <option value='"Trebuchet MS", sans-serif' data-font-family="Trebuchet MS">Trebuchet MS</option>
-                  <option value='Georgia, serif' data-font-family="Georgia">Georgia</option>
-                  <option value='"Times New Roman", serif' data-font-family="Times New Roman">Times New Roman</option>
-                  <option value='"Courier New", monospace' data-font-family="Courier New">Courier New</option>
-                  <option value='Impact, sans-serif' data-font-family="Impact">Impact</option>
-                  <option value='"Comic Sans MS", cursive' data-font-family="Comic Sans MS">Comic Sans</option>
-                </optgroup>
-                <optgroup label="Modern">
-                  <option value='Roboto, sans-serif' data-font-family="Roboto">Roboto</option>
-                  <option value='"Open Sans", sans-serif' data-font-family="Open Sans">Open Sans</option>
-                  <option value='Montserrat, sans-serif' data-font-family="Montserrat">Montserrat</option>
-                  <option value='Poppins, sans-serif' data-font-family="Poppins">Poppins</option>
-                  <option value='Lato, sans-serif' data-font-family="Lato">Lato</option>
-                  <option value='Nunito, sans-serif' data-font-family="Nunito">Nunito</option>
-                  <option value='Raleway, sans-serif' data-font-family="Raleway">Raleway</option>
-                  <option value='Oswald, sans-serif' data-font-family="Oswald">Oswald</option>
+                  <option value='Verdana, Geneva, sans-serif' data-font-family="Verdana">Verdana</option>
+                  <option value='Tahoma, Geneva, sans-serif' data-font-family="Tahoma">Tahoma</option>
+                  <option value='"Trebuchet MS", Arial, sans-serif' data-font-family="Trebuchet MS">Trebuchet MS</option>
+                  <option value='"Segoe UI", Arial, sans-serif' data-font-family="Segoe UI">Segoe UI</option>
                 </optgroup>
                 <optgroup label="Serif">
-                  <option value='"Playfair Display", serif' data-font-family="Playfair Display">Playfair Display</option>
-                  <option value='Merriweather, serif' data-font-family="Merriweather">Merriweather</option>
-                </optgroup>
-                <optgroup label="Display and script">
-                  <option value='"Bebas Neue", sans-serif' data-font-family="Bebas Neue">Bebas Neue</option>
-                  <option value='Lobster, cursive' data-font-family="Lobster">Lobster</option>
-                  <option value='Pacifico, cursive' data-font-family="Pacifico">Pacifico</option>
+                  <option value='Georgia, "Times New Roman", serif' data-font-family="Georgia">Georgia</option>
+                  <option value='"Times New Roman", Times, serif' data-font-family="Times New Roman">Times New Roman</option>
+                  <option value='Garamond, Georgia, serif' data-font-family="Garamond">Garamond</option>
+                  <option value='"Palatino Linotype", "Book Antiqua", Palatino, serif' data-font-family="Palatino Linotype">Palatino</option>
                 </optgroup>
                 <optgroup label="Monospace">
-                  <option value='"IBM Plex Mono", monospace' data-font-family="IBM Plex Mono">IBM Plex Mono</option>
+                  <option value='"Courier New", Courier, monospace' data-font-family="Courier New">Courier New</option>
+                  <option value='"Lucida Console", Monaco, monospace' data-font-family="Lucida Console">Lucida Console</option>
+                  <option value='ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace' data-font-family="ui-monospace">System Mono</option>
+                </optgroup>
+                <optgroup label="Display">
+                  <option value='Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif' data-font-family="Impact">Impact</option>
+                  <option value='"Comic Sans MS", "Comic Sans", cursive' data-font-family="Comic Sans MS">Comic Sans</option>
                 </optgroup>
               </select>
               <div id="templateFontPicker" class="font-preview-picker">
@@ -741,8 +910,8 @@
           </div>
 
           <div class="mb-2">
-            <label for="templateWeight" class="form-label">Style</label>
-            <select id="templateWeight" class="form-select form-select-sm">
+            <label for="templateWeightButton" class="form-label">Style</label>
+            <select id="templateWeight" class="styled-native-select" aria-hidden="true" tabindex="-1">
               <option value="400" selected>Regular</option>
               <option value="600">Semi-bold</option>
               <option value="700">Bold</option>
@@ -764,7 +933,7 @@
                   </div>
                 </div>
                 <label class="template-color-match" title="Match foreground color">
-                  <input type="checkbox" id="templateTextMatchFg"> Fore
+                  <input type="checkbox" id="templateTextMatchFg"> ✓ Fore
                 </label>
               </div>
             </div>
@@ -783,7 +952,7 @@
                   </div>
                 </div>
                 <label class="template-color-match" title="Match background color">
-                  <input type="checkbox" id="templateBackMatchBg"> Back
+                  <input type="checkbox" id="templateBackMatchBg"> ✓ Back
                 </label>
               </div>
             </div>
@@ -803,17 +972,33 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-4">
-        <div class="preview-panel">
-          <div class="d-flex justify-content-center align-items-start">
+      <div class="col-12 col-lg-4 preview-column">
+        <div id="previewPanel" class="preview-panel">
+          <div class="preview-qr-wrap">
             <div id="qrcode" class="blank-bg"></div>
           </div>
-          <div class="d-flex justify-content-center">
-            <button id="downloadQrBtn" type="button" class="btn btn-primary btn-sm download-qr-btn" disabled>Download PNG</button>
+          <div class="preview-side">
+            <div class="preview-control-stack">
+              <button id="mobilePreviewToggle" type="button" class="preview-icon-button mobile-preview-toggle" aria-expanded="false" aria-label="Maximize QR preview" title="Maximize QR preview">
+                <svg class="preview-icon-expand" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="preview-icon-restore" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button id="downloadQrBtn" type="button" class="preview-icon-button" aria-label="Download QR code as PNG" title="Download PNG" disabled>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="save-hint">ⓘ You can also right-click the QR code and choose “Save image as…”</div>
           </div>
-          <div class="save-hint">ⓘ You can also right-click the QR code and choose “Save image as…”</div>
         </div>
       </div>
+
+      <div id="mobileAdvancedHost" class="col-12 d-lg-none"></div>
     </div>
   </div>
 
@@ -833,6 +1018,28 @@
       left: '-9999px',
       top: '-9999px'
     }).appendTo('body')[0];
+
+    const advancedMobileQuery = window.matchMedia('(max-width: 991.98px)');
+
+    function placeAdvancedSection() {
+      const section = document.getElementById('advancedSection');
+      const mobileHost = document.getElementById('mobileAdvancedHost');
+      const desktopAnchor = document.getElementById('advancedDesktopAnchor');
+      if (!section || !mobileHost || !desktopAnchor) return;
+
+      if (advancedMobileQuery.matches) {
+        if (section.parentElement !== mobileHost) mobileHost.appendChild(section);
+      } else if (section.previousElementSibling !== desktopAnchor) {
+        desktopAnchor.insertAdjacentElement('afterend', section);
+      }
+    }
+
+    placeAdvancedSection();
+    if (typeof advancedMobileQuery.addEventListener === 'function') {
+      advancedMobileQuery.addEventListener('change', placeAdvancedSection);
+    } else {
+      advancedMobileQuery.addListener(placeAdvancedSection);
+    }
 
     function initColorPicker(displayId,pickerId,paletteId,inputId,nativeId,onChange){
       const display=$(`#${displayId}`);
@@ -1432,6 +1639,77 @@
 
     $('.range-modern').on('input change', function(){ updateRangeFill(this); });
 
+    function installMobileRangeGuards() {
+      document.querySelectorAll('.range-modern').forEach(input => {
+        if (input.dataset.mobileRangeGuard === '1') return;
+        input.dataset.mobileRangeGuard = '1';
+        let gesture = null;
+        const threshold = 8;
+
+        const restoreStartValue = () => {
+          if (!gesture) return;
+          input.value = gesture.startValue;
+          updateRangeFill(input);
+        };
+
+        input.addEventListener('pointerdown', event => {
+          if (event.pointerType === 'mouse') return;
+          gesture = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            startValue: input.value,
+            mode: 'pending'
+          };
+        }, true);
+
+        input.addEventListener('pointermove', event => {
+          if (!gesture || gesture.pointerId !== event.pointerId) return;
+          const dx = event.clientX - gesture.startX;
+          const dy = event.clientY - gesture.startY;
+          const absX = Math.abs(dx);
+          const absY = Math.abs(dy);
+
+          if (gesture.mode === 'pending' && Math.max(absX, absY) >= threshold) {
+            if (absY > absX * 1.15) {
+              gesture.mode = 'vertical';
+              restoreStartValue();
+            } else if (absX > absY * 1.15) {
+              gesture.mode = 'horizontal';
+              input.classList.add('mobile-horizontal-drag');
+              try { input.setPointerCapture(event.pointerId); } catch (_) {}
+            }
+          }
+
+          if (gesture.mode === 'vertical') {
+            restoreStartValue();
+          } else if (gesture.mode === 'horizontal' && event.cancelable) {
+            event.preventDefault();
+          }
+        }, { capture: true, passive: false });
+
+        // Ignore native slider changes until the gesture clearly becomes horizontal.
+        input.addEventListener('input', event => {
+          if (!gesture || gesture.mode === 'horizontal') return;
+          restoreStartValue();
+          event.stopImmediatePropagation();
+        }, true);
+
+        const finishGesture = event => {
+          if (!gesture || (event && gesture.pointerId !== event.pointerId)) return;
+          if (gesture.mode !== 'horizontal') restoreStartValue();
+          input.classList.remove('mobile-horizontal-drag');
+          gesture = null;
+        };
+
+        input.addEventListener('pointerup', finishGesture, true);
+        input.addEventListener('pointercancel', finishGesture, true);
+        input.addEventListener('lostpointercapture', finishGesture, true);
+      });
+    }
+
+    installMobileRangeGuards();
+
     function updateErrorCorrectionLabel() {
       $('#errorCorrectionValue').text(
         errorCorrectionPreference === 'AUTO'
@@ -1498,6 +1776,23 @@
       function closePicker() {
         picker.removeClass('open');
         button.attr('aria-expanded', 'false');
+        menu.removeClass('open-up').css('max-height', '');
+      }
+
+      function fitMenuToViewport() {
+        if (!picker.hasClass('open') || !button[0]) return;
+
+        menu.removeClass('open-up').css('max-height', '');
+        const rect = button[0].getBoundingClientRect();
+        const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        const gap = 8;
+        const availableBelow = Math.max(0, viewportHeight - rect.bottom - gap);
+        const availableAbove = Math.max(0, rect.top - gap);
+        const openUp = availableBelow < 180 && availableAbove > availableBelow;
+        const available = openUp ? availableAbove : availableBelow;
+        const maxHeight = Math.max(52, Math.min(310, Math.floor(available - 4)));
+
+        menu.toggleClass('open-up', openUp).css('max-height', `${maxHeight}px`);
       }
 
       function updateSelectedPreview() {
@@ -1554,10 +1849,14 @@
       button.on('click', function(event) {
         event.stopPropagation();
         const opening = !picker.hasClass('open');
-        $('.font-preview-picker').removeClass('open');
+        $('.font-preview-picker').not(picker)
+          .removeClass('open')
+          .find('.font-preview-button')
+          .attr('aria-expanded', 'false');
         picker.toggleClass('open', opening);
         button.attr('aria-expanded', opening ? 'true' : 'false');
         if (opening) {
+          fitMenuToViewport();
           const selected = menu.find('.font-preview-option.selected')[0];
           if (selected) selected.scrollIntoView({ block: 'nearest' });
         }
@@ -1595,35 +1894,142 @@
       $(document).on('click.fontPreview', function(event) {
         if (!$(event.target).closest('#templateFontPicker').length) closePicker();
       });
+      $(window).on('resize.fontPreview scroll.fontPreview', function() {
+        if (picker.hasClass('open')) requestAnimationFrame(fitMenuToViewport);
+      });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', function() {
+          if (picker.hasClass('open')) requestAnimationFrame(fitMenuToViewport);
+        });
+      }
 
       updateSelectedPreview();
     }
 
     initTemplateFontPreviewPicker();
 
-    let templateFontLoadRun = 0;
-    async function loadSelectedTemplateFont() {
-      if (!document.fonts || !document.fonts.load) return;
+    function initUniformSelect(selectId, buttonId) {
+      const select = $(`#${selectId}`);
+      if (!select.length) return;
 
-      const runId = ++templateFontLoadRun;
-      const option = $('#templateFont option:selected');
-      const family = option.attr('data-font-family');
-      const weight = Number($('#templateWeight').val()) || 400;
-      if (!family) return;
+      const picker = $('<div>', { class: 'font-preview-picker uniform-select-picker' });
+      const button = $('<button>', {
+        type: 'button',
+        id: buttonId,
+        class: 'font-preview-button',
+        'aria-haspopup': 'listbox',
+        'aria-expanded': 'false'
+      });
+      const buttonText = $('<span>', { class: 'font-preview-button-text' });
+      const chevron = $('<span>', { class: 'font-preview-chevron', 'aria-hidden': 'true', text: '▼' });
+      const menu = $('<div>', {
+        class: 'font-preview-menu uniform-select-menu',
+        role: 'listbox',
+        'aria-label': select.attr('id')
+      });
 
-      try {
-        await document.fonts.load(`${weight} 48px "${family}"`);
-      } catch (error) {
-        // The CSS stack still provides a reliable fallback.
+      button.append(buttonText, chevron);
+      picker.append(button, menu);
+      select.after(picker);
+
+      function closePicker() {
+        picker.removeClass('open');
+        button.attr('aria-expanded', 'false');
       }
 
-      if (runId === templateFontLoadRun) scheduleFrame();
+      function updateSelected() {
+        const option = select.find('option:selected');
+        const value = option.val();
+        const label = option.text();
+        buttonText.text(label);
+        menu.find('.uniform-select-option')
+          .removeClass('selected')
+          .attr('aria-selected', 'false')
+          .filter(function(){ return $(this).attr('data-value') === String(value); })
+          .addClass('selected')
+          .attr('aria-selected', 'true');
+      }
+
+      select.find('option').each(function() {
+        const option = $(this);
+        const value = String(option.val());
+        $('<button>', {
+          type: 'button',
+          class: 'uniform-select-option',
+          role: 'option',
+          'data-value': value,
+          'aria-selected': 'false',
+          text: option.text()
+        }).on('click', function() {
+          if (String(select.val()) !== value) select.val(value).trigger('change');
+          updateSelected();
+          closePicker();
+          button.trigger('focus');
+        }).appendTo(menu);
+      });
+
+      button.on('click', function(event) {
+        event.stopPropagation();
+        const opening = !picker.hasClass('open');
+        $('.font-preview-picker').not(picker)
+          .removeClass('open')
+          .find('.font-preview-button')
+          .attr('aria-expanded', 'false');
+        picker.toggleClass('open', opening);
+        button.attr('aria-expanded', opening ? 'true' : 'false');
+      });
+
+      button.on('keydown', function(event) {
+        if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          if (!picker.hasClass('open')) button.trigger('click');
+          const selected = menu.find('.uniform-select-option.selected');
+          (selected.length ? selected : menu.find('.uniform-select-option').first()).trigger('focus');
+        } else if (event.key === 'Escape') {
+          closePicker();
+        }
+      });
+
+      menu.on('keydown', '.uniform-select-option', function(event) {
+        const items = menu.find('.uniform-select-option');
+        const index = items.index(this);
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          items.eq(Math.min(index + 1, items.length - 1)).trigger('focus');
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          if (index <= 0) button.trigger('focus');
+          else items.eq(index - 1).trigger('focus');
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          closePicker();
+          button.trigger('focus');
+        }
+      });
+
+      select.on('change.uniformSelect', updateSelected);
+      updateSelected();
+    }
+
+    initUniformSelect('templateSide', 'templateSideButton');
+    initUniformSelect('templateWeight', 'templateWeightButton');
+
+    $(document).on('click.uniformSelect', function(event) {
+      if (!$(event.target).closest('.font-preview-picker').length) {
+        $('.font-preview-picker')
+          .removeClass('open')
+          .find('.font-preview-button')
+          .attr('aria-expanded', 'false');
+      }
+    });
+
+    function loadSelectedTemplateFont() {
+      // All font choices are local system/browser font stacks.
+      // Redraw immediately; no network font request is needed.
+      scheduleFrame();
     }
 
     $('#templateFont, #templateWeight').on('change', loadSelectedTemplateFont);
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(loadSelectedTemplateFont);
-    }
 
     $('#templateSection').on('input change', 'input, select, textarea', function() {
       updateTemplateLabels();
@@ -2101,17 +2507,17 @@
     }
 
     function getFittedFont(ctx, lines, opt, maxWidth) {
-      let size = opt.size;
+      const requestedSize = Math.max(12 * CANVAS_SCALE, opt.size);
       const contentLines = Array.isArray(lines) ? lines : [String(lines)];
-      const widestLine = () => Math.max(...contentLines.map(line => ctx.measureText(line || ' ').width));
-      ctx.font = `${opt.weight} ${size}px ${opt.font}`;
+      ctx.font = `${opt.weight} ${requestedSize}px ${opt.font}`;
 
-      while (size > 12 * CANVAS_SCALE && widestLine() > maxWidth) {
-        size -= 2 * CANVAS_SCALE;
-        ctx.font = `${opt.weight} ${size}px ${opt.font}`;
-      }
+      const widest = Math.max(...contentLines.map(line => ctx.measureText(line || ' ').width));
+      if (!widest || widest <= maxWidth) return requestedSize;
 
-      return size;
+      // The width cap is independent of the requested font size. This makes the
+      // dial monotonic: increasing it can grow or plateau, but never shrink text.
+      const fitted = requestedSize * (maxWidth / widest);
+      return Math.max(12 * CANVAS_SCALE, Math.min(requestedSize, fitted));
     }
 
     function drawTemplateLines(ctx, lines, centerX, centerY, lineHeight) {
@@ -2133,10 +2539,15 @@
       };
       const lines = scaledOpt.text.split(/\r?\n/);
       const isVertical = scaledOpt.side === 'left' || scaledOpt.side === 'right';
-      const padding = Math.round(scaledOpt.size * 0.55);
+      // Keep horizontal padding stable so raising the font-size dial does not
+      // reduce the available width and unexpectedly make the text smaller.
+      const padding = 24 * CANVAS_SCALE;
       const measureCanvas = document.createElement('canvas');
       const measureCtx = measureCanvas.getContext('2d');
-      const availableTextWidth = (isVertical ? canvas.height : canvas.width) - padding * 2;
+      const availableTextWidth = Math.max(
+        12 * CANVAS_SCALE,
+        (isVertical ? canvas.height : canvas.width) - padding * 2
+      );
       const fittedSize = getFittedFont(measureCtx, lines, scaledOpt, availableTextWidth);
       const lineHeight = fittedSize * 1.2;
       const textBlockHeight = Math.max(lineHeight, lineHeight * lines.length);
@@ -2220,6 +2631,19 @@
       $('#qrcode').empty().append(canvas);
       $('#downloadQrBtn').prop('disabled', false);
     }
+
+    $('#mobilePreviewToggle').on('click', function() {
+      const panel = $('#previewPanel');
+      const expanded = !panel.hasClass('mobile-preview-expanded');
+      panel.toggleClass('mobile-preview-expanded', expanded);
+      $(this)
+        .attr('aria-expanded', String(expanded))
+        .attr('aria-label', expanded ? 'Restore compact QR preview' : 'Maximize QR preview')
+        .attr('title', expanded ? 'Restore compact QR preview' : 'Maximize QR preview');
+
+      // Recalculate an open font menu after the sticky preview changes height.
+      $(window).trigger('resize.fontPreview');
+    });
 
     $('#downloadQrBtn').on('click', function() {
       const canvas = $('#qrcode canvas')[0];
